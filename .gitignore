@@ -54,3 +54,4 @@ pids
 *.pid
 *.seed
 *.pid.lock
+/.cpcache/

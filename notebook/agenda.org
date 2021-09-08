@@ -3,8 +3,17 @@
 
 
 
+So lets get going transferring pieces from old project
+
 * Todays Agenda
 ** TODO Pedestal, Reitit and Integrant
-** TODO Set up database and move basics from OasisXD
+*** DONE Pedestal
+    CLOSED: [2021-09-08 Wed 11:49]
+*** DONE Reitit
+    CLOSED: [2021-09-08 Wed 11:50]
+*** DOING Integrant
+    In the midst of setting integrant up. at the 'create-app' portion passing in routes
+** DOING Set up database and move basics from OasisXD
 ** TODO Shadow-cljs and serve main view
 ** TODO understand more about logback.xml
+** TODO Pedestal CSRF?
