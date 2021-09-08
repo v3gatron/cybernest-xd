@@ -1,0 +1,10 @@
+#+TITLE: cybernest-xd
+#+AUTHOR: v3ga jerusalem
+
+
+
+* Todays Agenda
+** TODO Pedestal, Reitit and Integrant
+** TODO Set up database and move basics from OasisXD
+** TODO Shadow-cljs and serve main view
+** TODO understand more about logback.xml
