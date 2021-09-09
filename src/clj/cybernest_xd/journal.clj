@@ -63,7 +63,7 @@
     (ring/create-default-handler))))
 
 
-(defn start []
+#_(defn start []
   (-> {:env :dev
        ::server/type :jetty
        ::server/port 8080

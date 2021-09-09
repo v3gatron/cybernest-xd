@@ -19,140 +19,103 @@
 (defn interceptor [number]
   {:enter (fn [ctx] (a/go (update-in ctx [:request :number] (fnil + 0) number)))})
 
+(defn hello-interceptor [request]
+  {:status 200 :body "Hello, chrysalis"})
+
 (def router
   (pedestal/routing-interceptor
-    (http/router
-      [["/swagger.json"
-        {:get {:no-doc true
-               :swagger {:info {:title "my-api"
-                                :description "with pedestal & reitit-http"}}
-               :handler (swagger/create-swagger-handler)}}]
+   (http/router
+    [["/swagger.json"
+      {:get {:no-doc true
+             :swagger {:info {:title "cybernst-xd: per aspera ad astra"
+                              :description "my paracosmic playground"}}
+             :handler (swagger/create-swagger-handler)}}]
 
-       ["/interceptors"
-        {:swagger {:tags ["interceptors"]}
-         :interceptors [(interceptor 1)]}
+     ["/"
+      {:swagger {:tags ["basic"]}
+       :get {:interceptors [hello-interceptor]} }]
 
-        ["/number"
-         {:interceptors [(interceptor 10)]
-          :get {:interceptors [(interceptor 100)]
-                :handler (fn [req]
-                           {:status 200
-                            :body (select-keys req [:number])})}}]]
+     ["/interceptors"
+      {:swagger {:tags ["interceptors"]}
+       :interceptors [(interceptor 1)]}
 
-       ["/files"
-        {:swagger {:tags ["files"]}}
+      ["/number"
+       {:interceptors [(interceptor 10)]
+        :get {:interceptors [(interceptor 100)]
+              :handler (fn [req]
+                         {:status 200
+                          :body (select-keys req [:number])})}}]]
 
-        ["/upload"
-         {:post {:summary "upload a file"
-                 :parameters {:multipart {:file multipart/temp-file-part}}
-                 :responses {200 {:body {:name string?, :size int?}}}
-                 :handler (fn [{{{:keys [file]} :multipart} :parameters}]
-                            {:status 200
-                             :body {:name (:filename file)
-                                    :size (:size file)}})}}]
+     ["/files"
+      {:swagger {:tags ["files"]}}
 
-        ["/download"
-         {:get {:summary "downloads a file"
-                :swagger {:produces ["image/png"]}
-                :handler (fn [_]
-                           {:status 200
-                            :headers {"Content-Type" "image/png"}
-                            :body (io/input-stream
-                                    (io/resource "reitit.png"))})}}]]
+      ["/upload"
+       {:post {:summary "upload a file"
+               :parameters {:multipart {:file multipart/temp-file-part}}
+               :responses {200 {:body {:name string?, :size int?}}}
+               :handler (fn [{{{:keys [file]} :multipart} :parameters}]
+                          {:status 200
+                           :body {:name (:filename file)
+                                  :size (:size file)}})}}]
 
-       ["/math"
-        {:swagger {:tags ["math"]}}
+      ["/download"
+       {:get {:summary "downloads a file"
+              :swagger {:produces ["image/png"]}
+              :handler (fn [_]
+                         {:status 200
+                          :headers {"Content-Type" "image/png"}
+                          :body (io/input-stream
+                                 (io/resource "reitit.png"))})}}]]
 
-        ["/plus"
-         {:get {:summary "plus with spec query parameters"
-                :parameters {:query {:x int?, :y int?}}
-                :responses {200 {:body {:total int?}}}
-                :handler (fn [{{{:keys [x y]} :query} :parameters}]
-                           {:status 200
-                            :body {:total (+ x y)}})}
-          :post {:summary "plus with spec body parameters"
-                 :parameters {:body {:x int?, :y int?}}
-                 :responses {200 {:body {:total int?}}}
-                 :handler (fn [{{{:keys [x y]} :body} :parameters}]
-                            {:status 200
-                             :body {:total (+ x y)}})}}]]]
+     ["/math"
+      {:swagger {:tags ["math"]}}
 
-      {;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
-       ;;:validate spec/validate ;; enable spec validation for route data
-       ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
-       :exception pretty/exception
-       :data {:coercion reitit.coercion.spec/coercion
-              :muuntaja m/instance
-              :interceptors [;; swagger feature
-                             swagger/swagger-feature
-                             ;; query-params & form-params
-                             (parameters/parameters-interceptor)
-                             ;; content-negotiation
-                             (muuntaja/format-negotiate-interceptor)
-                             ;; encoding response body
-                             (muuntaja/format-response-interceptor)
-                             ;; exception handling
-                             (exception/exception-interceptor)
-                             ;; decoding request body
-                             (muuntaja/format-request-interceptor)
-                             ;; coercing response bodys
-                             (coercion/coerce-response-interceptor)
-                             ;; coercing request parameters
-                             (coercion/coerce-request-interceptor)
-                             ;; multipart
-                             (multipart/multipart-interceptor)]}})
+      ["/plus"
+       {:get {:summary "plus with spec query parameters"
+              :parameters {:query {:x int?, :y int?}}
+              :responses {200 {:body {:total int?}}}
+              :handler (fn [{{{:keys [x y]} :query} :parameters}]
+                         {:status 200
+                          :body {:total (+ x y)}})}
+        :post {:summary "plus with spec body parameters"
+               :parameters {:body {:x int?, :y int?}}
+               :responses {200 {:body {:total int?}}}
+               :handler (fn [{{{:keys [x y]} :body} :parameters}]
+                          {:status 200
+                           :body {:total (+ x y)}})}}]
 
-    ;; optional default ring handler (if no routes have matched)
-    (ring/routes
-      (swagger-ui/create-swagger-ui-handler
-        {:path "/"
-         :config {:validatorUrl nil
-                  :operationsSorter "alpha"}})
-      (ring/create-resource-handler)
-      (ring/create-default-handler))))
+      ]]
 
-#_(def router
-    (pedestal/routing-interceptor
-     (http/router
-      [["/swagger.json"
-        {:get {:no-doc true
-               :swagger {:info {:title "cybernest: per aspera ad astra"
-                                :description "my playground"}}
-               :handler (swagger/create-swagger-handler)}}]
+    { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
+     ;;:validate spec/validate ;; enable spec validation for route data
+     ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+     :exception pretty/exception
+     :data {:coercion reitit.coercion.spec/coercion
+            :muuntaja m/instance
+            :interceptors [ ;; swagger feature
+                           swagger/swagger-feature
+                           ;; query-params & form-params
+                           (parameters/parameters-interceptor)
+                           ;; content-negotiation
+                           (muuntaja/format-negotiate-interceptor)
+                           ;; encoding response body
+                           (muuntaja/format-response-interceptor)
+                           ;; exception handling
+                           (exception/exception-interceptor)
+                           ;; decoding request body
+                           (muuntaja/format-request-interceptor)
+                           ;; coercing response bodys
+                           (coercion/coerce-response-interceptor)
+                           ;; coercing request parameters
+                           (coercion/coerce-request-interceptor)
+                           ;; multipart
+                           (multipart/multipart-interceptor)]}})
 
-       ;; NOTE: lets create a basic route here without it being an interceptor
-       ]
-
-      { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
-       ;;:validate spec/validate ;; enable spec validation for route data
-       ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
-       :exception pretty/exception
-       :data {:coercion reitit.coercion.spec/coercion
-              :muuntaja m/instance
-              :interceptors [ ;; swagger feature
-                             swagger/swagger-feature
-                             ;; query-params & form-params
-                             (parameters/parameters-interceptor)
-                             ;; content-negotiation
-                             (muuntaja/format-negotiate-interceptor)
-                             ;; encoding response body
-                             (muuntaja/format-response-interceptor)
-                             ;; exception handling
-                             (exception/exception-interceptor)
-                             ;; decoding request body
-                             (muuntaja/format-request-interceptor)
-                             ;; coercing response bodys
-                             (coercion/coerce-response-interceptor)
-                             ;; coercing request parameters
-                             (coercion/coerce-request-interceptor)
-                             ;; multipart
-                             (multipart/multipart-interceptor)]}})
-
-     ;; NOTE: withing 'pedestal/routing-interceptor here
-     (ring/routes
-      (swagger-ui/create-swagger-ui-handler
-       {:path "/"
-        :config {:validatorUrl nil
-                 :operationSorter "alpha"}})
-      (ring/create-resource-handler)
-      (ring/create-default-handler))))
+   ;; optional default ring handler (if no routes have matched)
+   (ring/routes
+    (swagger-ui/create-swagger-ui-handler
+     {:path "/swagger"
+      :config {:validatorUrl nil
+               :operationsSorter "alpha"}})
+    (ring/create-resource-handler)
+    (ring/create-default-handler))))
