@@ -9,15 +9,12 @@
                :username "vega"
               :password "spiderdeus"})
 
-;; (defn start-connection-pool [db-spec]
-;;   (connection/->pool HikariDataSource db-spec))
+(def datasource (jdbc/get-datasource db-spec))
 
 (defn start-connection-pool [db]
   (connection/->pool HikariDataSource db))
 
 
-
-(def datasource (jdbc/get-datasource db-spec))
 (defn stop-connection-pool [datasource]
   (.close datasource))
 

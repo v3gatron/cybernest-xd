@@ -1,19 +1,32 @@
 #+TITLE: cybernest-xd
 #+AUTHOR: v3ga jerusalem
 
+Cybernest is a personal database and playground to learn as well as capture things that I like
+Journaling, Task Management, Fitness, Books, possibly bookmark manager
 
 
-So lets get going transferring pieces from old project
+So lets get going transferring pieces from old project.
+What do you want to do here? This won't be public facing so have fun with is/
 
+I should be able to read .org, & .md files as well as make posts that are saved in the database
 * Todays Agenda
-** TODO Pedestal, Reitit and Integrant
+** DONE Pedestal, Reitit and Integrant
+   CLOSED: [2021-09-08 Wed 21:43]
 *** DONE Pedestal
     CLOSED: [2021-09-08 Wed 11:49]
 *** DONE Reitit
     CLOSED: [2021-09-08 Wed 11:50]
-*** DOING Integrant
+*** DONE Integrant
+    CLOSED: [2021-09-08 Wed 21:44]
     In the midst of setting integrant up. at the 'create-app' portion passing in routes
 ** DOING Set up database and move basics from OasisXD
+*** TODO start connection pool and pass in source to routes via integrant
 ** TODO Shadow-cljs and serve main view
-** TODO understand more about logback.xml
+** TODO Set up garden
+** DONE understand more about logback.xml
+   CLOSED: [2021-09-08 Wed 21:56]
 ** TODO Pedestal CSRF?
+** TODO review 'coercion'
+
+* Ideas
+  futura font

@@ -1,88 +1,66 @@
 (ns cybernest-xd.journal
-  (:require [io.pedestal.http :as server]
-            [reitit.ring :as ring]
-            [reitit.http :as http]
-            [reitit.coercion.spec]
-            [reitit.swagger :as swagger]
-            [reitit.swagger-ui :as swagger-ui]
-            [reitit.http.coercion :as coercion]
-            [reitit.dev.pretty :as pretty]
-            [reitit.http.interceptors.parameters :as parameters]
-            [reitit.http.interceptors.muuntaja :as muuntaja]
-            [reitit.http.interceptors.exception :as exception]
-            [reitit.http.interceptors.multipart :as multipart]
-            [reitit.pedestal :as pedestal]
-            [clojure.core.async :as a]
-            [clojure.java.io :as io]
-            [muuntaja.core :as m]))
-
-#_(def router
-  (pedestal/routing-interceptor
-   (http/router
-    [["/swagger.json"
-      {:get {:no-doc true
-             :swagger {:info {:title "cybernest: per aspera ad astra"
-                              :description "my playground"}}
-             :handler (swagger/create-swagger-handler)}}]
-
-     ;; NOTE: lets create a basic route here without it being an interceptor
-     ]
-
-    { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
-     ;;:validate spec/validate ;; enable spec validation for route data
-     ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
-     :exception pretty/exception
-     :data {:coercion reitit.coercion.spec/coercion
-            :muuntaja m/instance
-            :interceptors [ ;; swagger feature
-                           swagger/swagger-feature
-                           ;; query-params & form-params
-                           (parameters/parameters-interceptor)
-                           ;; content-negotiation
-                           (muuntaja/format-negotiate-interceptor)
-                           ;; encoding response body
-                           (muuntaja/format-response-interceptor)
-                           ;; exception handling
-                           (exception/exception-interceptor)
-                           ;; decoding request body
-                           (muuntaja/format-request-interceptor)
-                           ;; coercing response bodys
-                           (coercion/coerce-response-interceptor)
-                           ;; coercing request parameters
-                           (coercion/coerce-request-interceptor)
-                           ;; multipart
-                           (multipart/multipart-interceptor)]}})
-
-   ;; NOTE: withing 'pedestal/routing-interceptor here
-   (ring/routes
-    (swagger-ui/create-swagger-ui-handler
-     {:path "/"
-      :config {:validatorUrl nil
-               :operationSorter "alpha"}})
-    (ring/create-resource-handler)
-    (ring/create-default-handler))))
+  (:require [cybernest-xd.db :as db]
+            [next.jdbc :as jdbc]
+            [next.jdbc.sql :as sql]
+            ))
+#_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
+                                                         handle VARCHAR(100) NOT NULL,
+                                                         password VARCHAR(100)  NOT NULL,
+                                                         profile jsonb)"])
+(defn create-db-tables []
+  (jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
+                                                         handle VARCHAR(100) NOT NULL,
+                                                         password VARCHAR(100)  NOT NULL,
+                                                         profile jsonb)"]
+               )
 
 
-#_(defn start []
-  (-> {:env :dev
-       ::server/type :jetty
-       ::server/port 8080
-       ::server/join? false
-       ;; no pedestal routes
-       ::server/routes []
-       ;; allow serving the swagger-ui styles & scripts from self
-       ::server/secure-headers {:content-security-policy-settings
-                                {:default-src "'self'"
-                                 :style-src "'self' 'unsafe-inline'"
-                                 :script-src "'self' 'unsafe-inline'"}}}
-      (server/default-interceptors)
-      ;; use the reitit router
-      (pedestal/replace-last-interceptor router)
-      (server/dev-interceptors)
-      (server/create-server)
-      (server/start))
-  (println "server running in port 3000"))
+  (jdbc/execute! db/datasource
+               ["create table if not exists book(id SERIAL NOT NULL PRIMARY KEY,
+                                                    title VARCHAR(1000)  NOT NULL,
+                                                    author VARCHAR(100),
+                                                    genre VARCHAR(50),
+                                                    own BOOLEAN,
+                                                    reading VARCHAR(10),
+                                                    description TEXT,
+                                                    pages INTEGER)"])
 
-(comment
 
-  (start))
+  (jdbc/execute! db/datasource
+               ["create table if not exists chamber(id SERIAL NOT NULL PRIMARY KEY,
+                                                  architect_id INTEGER,
+                                                  name VARCHAR(100) NOT NULL,
+                                                  created_at TIMESTAMP DEFAULT Now(),
+                                                  CONSTRAINT fk_architect
+                                                     FOREIGN KEY(architect_id)
+                                                        REFERENCES architect(id))"])
+
+  (jdbc/execute! db/datasource
+               ["create table if not exists cube(id SERIAL NOT NULL PRIMARY KEY,
+                                                  architect_id INTEGER,
+                                                  chamber_id INTEGER,
+                                                  name VARCHAR(100) NOT NULL,
+                                                  created_at TIMESTAMP DEFAULT Now(),
+                                                  CONSTRAINT fk_architect
+                                                     FOREIGN KEY(architect_id)
+                                                        REFERENCES architect(id),
+                                                  CONSTRAINT fk_chamber
+                                                       FOREIGN KEY(chamber_id)
+                                                          REFERENCES chamber(id))"])
+  (jdbc/execute! db/datasource
+               ["create table if not exists iota(id SERIAL NOT NULL PRIMARY KEY,
+                                                 architect_id INTEGER,
+                                                 chamber_id INTEGER,
+                                                 cube_id INTEGER,
+                                                 post VARCHAR(400),
+                                                 created_at TIMESTAMP DEFAULT Now(),
+                                                 CONSTRAINT fk_architect
+                                                     FOREIGN KEY(architect_id)
+                                                        REFERENCES architect(id),
+                                                 CONSTRAINT fk_chamber
+                                                       FOREIGN KEY(chamber_id)
+                                                          REFERENCES chamber(id),
+                                                 CONSTRAINT fk_cube
+                                                       FOREIGN KEY(cube_id)
+                                                          REFERENCES cube(id))"]))
+(create-db-tables)

@@ -27,7 +27,7 @@
    (http/router
     [["/swagger.json"
       {:get {:no-doc true
-             :swagger {:info {:title "cybernst-xd: per aspera ad astra"
+             :swagger {:info {:title "cybernest-xd: per aspera ad astra"
                               :description "my paracosmic playground"}}
              :handler (swagger/create-swagger-handler)}}]
 
@@ -49,7 +49,7 @@
      ["/files"
       {:swagger {:tags ["files"]}}
 
-      ["/upload"
+      #_["/upload"
        {:post {:summary "upload a file"
                :parameters {:multipart {:file multipart/temp-file-part}}
                :responses {200 {:body {:name string?, :size int?}}}
@@ -58,7 +58,7 @@
                            :body {:name (:filename file)
                                   :size (:size file)}})}}]
 
-      ["/download"
+      #_["/download"
        {:get {:summary "downloads a file"
               :swagger {:produces ["image/png"]}
               :handler (fn [_]
@@ -67,7 +67,7 @@
                           :body (io/input-stream
                                  (io/resource "reitit.png"))})}}]]
 
-     ["/math"
+     #_["/math"
       {:swagger {:tags ["math"]}}
 
       ["/plus"
