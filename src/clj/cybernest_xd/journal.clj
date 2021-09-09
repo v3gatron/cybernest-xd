@@ -2,6 +2,10 @@
   (:require [cybernest-xd.db :as db]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
+            [next.jdbc.result-set :as rs]
+            [honey.sql :as honeysql]
+            [honey.sql.helpers :as hh]
+            [jsonista.core :as jsonista]
             ))
 #_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
                                                          handle VARCHAR(100) NOT NULL,
@@ -64,3 +68,31 @@
                                                        FOREIGN KEY(cube_id)
                                                           REFERENCES cube(id))"]))
 (create-db-tables)
+
+
+(defn post-iota [{:keys [post]}]
+  (-> (hh/insert-into :iota)
+      (hh/columns :post)
+      (hh/values [[post]])))
+
+
+
+(defn db-query [sql]
+  (jdbc/execute! db/datasource sql
+               {:return-keys true
+                :builder-fn rs/as-unqualified-maps}))
+
+(defn db-query-one [sql]
+  (jdbc/execute-one! db/datasource sql
+                   {:return-keys true
+                    :builder-fn rs/as-unqualified-maps}))
+
+(defn query-one! [query]
+  (-> (honeysql/format query)
+      db-query-one))
+
+(defn query! [query]
+  (-> (honeysql/format query)
+      db-query))
+
+(query! (post-iota {:post "testing"}))
