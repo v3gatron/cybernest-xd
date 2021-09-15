@@ -14,7 +14,8 @@
                          ::server/resource-path  "public"
                          ::server/secure-headers {:content-security-policy-settings {:default-src "'self'"
                                                                                      :style-src   "'self' 'unsafe-inline'"
-                                                                                     :script-src  "'self' 'unsafe-inline'"}}}})
+                                                                                     :script-src  "'self' 'unsafe-inline'"}}
+                                                                                     }})
 
 (defmethod ig/init-key :cybernest-xd/db [_ db-spec]
   (println "Database Initiated...")
