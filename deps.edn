@@ -1,6 +1,6 @@
 {:paths ["src/clj" "resources" "dev" "target" "config"]
  :deps  {
-         org.clojure/clojure {:mvn/version "1.10.3"}
+         org.clojure/clojure            {:mvn/version "1.10.3"}
          ;; -- Server-side
          io.pedestal/pedestal.service   {:mvn/version "0.5.9"}
          io.pedestal/pedestal.route     {:mvn/version "0.5.9"}
@@ -12,6 +12,8 @@
          org.slf4j/log4j-over-slf4j     {:mvn/version "1.7.26"}
          metosin/reitit-pedestal        {:mvn/version "0.5.15"}
          metosin/reitit                 {:mvn/version "0.5.15"}
+         metosin/ring-http-response     {:mvn/version "0.9.3"}
+
          ;; io.pedestal/pedestal.log     {:mvn/version "0.5.9"}
          ;; com.fzakaria/slf4j-timbre    {:mvn/version "0.3.21"}
 

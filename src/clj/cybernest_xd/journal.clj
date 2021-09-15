@@ -6,6 +6,7 @@
             [honey.sql :as honeysql]
             [honey.sql.helpers :as hh]
             [jsonista.core :as jsonista]
+            [ring.util.http-response :as response]
             ))
 #_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
                                                          handle VARCHAR(100) NOT NULL,
@@ -67,14 +68,14 @@
                                                  CONSTRAINT fk_cube
                                                        FOREIGN KEY(cube_id)
                                                           REFERENCES cube(id))"]))
-(create-db-tables)
+
+#_(create-db-tables)
 
 
-(defn post-iota [{:keys [post]}]
+(defn post-iota [{:keys [architect_id post]}]
   (-> (hh/insert-into :iota)
-      (hh/columns :post)
-      (hh/values [[post]])))
-
+      (hh/columns :architect_id :post)
+      (hh/values [[architect_id post]])))
 
 
 (defn db-query [sql]
@@ -95,4 +96,11 @@
   (-> (honeysql/format query)
       db-query))
 
-(query! (post-iota {:post "testing"}))
+
+(defn create-iota! [{:keys [params]}]
+  (query! (post-iota params))
+  (response/found "/")
+  )
+
+;; NOTE: My first post...
+#_(query! (post-iota {:architect_id 1 :post "Is it working? I'm not sure what I'm feeling. Am I fighting loneliness, anger or frustration? I definitely don't fit in in this world... To be honest, that may not be a bad thing"}))

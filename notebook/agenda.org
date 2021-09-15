@@ -19,7 +19,8 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 *** DONE Integrant
     CLOSED: [2021-09-08 Wed 21:44]
     In the midst of setting integrant up. at the 'create-app' portion passing in routes
-** DOING Set up database and move basics from OasisXD
+** DONE Set up database and move basics from OasisXD
+   CLOSED: [2021-09-09 Thu 21:15]
 *** TODO start connection pool and pass in source to routes via integrant
 ** TODO Shadow-cljs and serve main view
 ** TODO Set up garden
@@ -30,3 +31,15 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 
 * Ideas
   futura font
+
+
+* Start DB
+  postgres -D /usr/local/var/postgres
+
+
+
+   :post {:summary    "create an iota"
+              :parameters {:body {:architect_id int?, :post string?}}
+              :responses  {:status 200
+                           :body   {:architect_id int? :post string?}}
+              :handler    journal/post-iota}
