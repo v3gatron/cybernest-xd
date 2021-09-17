@@ -22,15 +22,18 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 ** DONE Set up database and move basics from OasisXD
    CLOSED: [2021-09-09 Thu 21:15]
 *** TODO start connection pool and pass in source to routes via integrant
-** TODO Shadow-cljs and serve main view
-** TODO Set up garden
+** DONE Shadow-cljs and serve main view
+   CLOSED: [2021-09-17 Fri 13:50]
+** DONE Set up garden
+   CLOSED: [2021-09-17 Fri 13:50]
 ** DONE understand more about logback.xml
    CLOSED: [2021-09-08 Wed 21:56]
-** TODO Pedestal CSRF?
 ** TODO review 'coercion'
+** TODO CSRF?
 
 * Ideas
   futura font
+  animated raining header at some points? javascript project?
 
 
 * Start DB
@@ -38,8 +41,5 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 
 
 
-   :post {:summary    "create an iota"
-              :parameters {:body {:architect_id int?, :post string?}}
-              :responses  {:status 200
-                           :body   {:architect_id int? :post string?}}
-              :handler    journal/post-iota}
+* Useful links
+  https://ghufran.posthaven.com/setting-up-a-reagent-clojurescript-project-with-shadow-cljs-and-cursive

@@ -29,12 +29,17 @@
    [:title title]
    (include-css "/css/style.css")])
 
+(defn header []
+  [:header
+   [:div#logo (str "Cybernest&#8734xD: Per Aspera Ad Astra")]])
+
 (defn page [title & content]
   (html5 {:lang "en"}
          (head title)
-         [:body content
-          (include-js "/out/main.js")]
-         (include-js "/out/main.js")))
+         [:body
+          (header)
+          [:div content]
+          (include-js "/out/main.js")]))
 
 #_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
                                                          handle VARCHAR(100) NOT NULL,
@@ -176,7 +181,7 @@
 ;; lets start a server here
 (defn handler [_]
   {:status 200
-   :body   (page "Cybernest-xD" "ok 22 testing again")
+   :body   (page "Cybernest&#8734xD" "ok 22 testing again")
    :headers {"Content-Type" "text/html"}})
 
 (defn wrap [handler id]
