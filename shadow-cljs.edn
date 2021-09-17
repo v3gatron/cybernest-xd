@@ -1,0 +1,6 @@
+{:deps {:aliases [:dev]}
+ :builds
+ {:app {:target     :browser
+        :output-dir "resources/public/out"
+        :asset-path "/out"
+        :modules    {:main {:entries [cybernest-xd.core]}}}}}

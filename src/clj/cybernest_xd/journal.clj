@@ -32,7 +32,9 @@
 (defn page [title & content]
   (html5 {:lang "en"}
          (head title)
-         [:body content]))
+         [:body content
+          (include-js "/out/main.js")]
+         (include-js "/out/main.js")))
 
 #_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
                                                          handle VARCHAR(100) NOT NULL,
@@ -193,6 +195,7 @@
    (ring/routes
     (ring/create-resource-handler {:path "/" })
     (ring/create-default-handler))))
+
 
 
 

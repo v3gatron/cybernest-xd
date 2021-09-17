@@ -2,7 +2,8 @@
   (:require [integrant.repl :as ig-repl]
             [cemerick.pomegranate :only (add-dependencies)]
             [garden-watcher.core :as garden-watch]
-            [cybernest-xd.system :as system]))
+            [cybernest-xd.system :as system]
+            [shadow.cljs.devtools]))
 
 (ig-repl/set-prep! (constantly (system/cybernest-xd-configuration :dev)))
 

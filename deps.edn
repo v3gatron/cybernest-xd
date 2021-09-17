@@ -1,6 +1,9 @@
-{:paths ["src/clj" "resources" "dev" "target" "config"]
+{:paths ["src/clj" "src/cljs" "resources" "dev" "target" "config"]
  :deps  {
          org.clojure/clojure            {:mvn/version "1.10.3"}
+         org.clojure/clojurescript      {:mvn/version "1.10.879"}
+         thheller/shadow-cljs           {:mvn/version "2.15.9"}
+         reagent/reagent                {:mvn/version "1.1.0"}
          ;; -- Server-side
          io.pedestal/pedestal.service   {:mvn/version "0.5.9"}
          io.pedestal/pedestal.route     {:mvn/version "0.5.9"}
@@ -68,9 +71,7 @@
          cider/piggieback  {:mvn/version "0.5.2"}
          cider/orchard     {:mvn/version "0.7.1"}}
 
- :aliases {:repl-server
-           {:exec-fn   clojure.core.server/start-server
-            :exec-args {:name          "repl-server"
-                        :port          5555
-                        :accept        clojure.core.server/repl
-                        :server-daemon false}}}}
+ :aliases
+ {:dev
+  {:extra-paths ["src/cljs"]
+   :extra-deps  {thheller/shadow-cljs {:mvn/version "2.15.9"}}}}}
