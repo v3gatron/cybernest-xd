@@ -37,9 +37,11 @@
   (html5 {:lang "en"}
          (head title)
          [:body
-          (header)
-          [:div content]
-          (include-js "/out/main.js")]))
+          [:div#app
+           (header)
+           [:div#app content]
+           (include-js "/out/main.js")
+           [:script "cybernest_xd.core.run()"]]]))
 
 #_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
                                                          handle VARCHAR(100) NOT NULL,
