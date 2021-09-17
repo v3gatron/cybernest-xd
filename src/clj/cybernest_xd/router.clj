@@ -41,11 +41,16 @@
      ;; TODO: check what you're doing here... your swagger tags should be seperate and above allroutes under topic
 
      ["/iota"
-      {:swagger {:tags ["iotas"]}
+      {:swagger    {:tags ["iotas"]}
        :parameters {:body {:architect_id int?, :post string?}}
        ;; :get {:interceptors journal/post-iota}
-       :post {:interceptors [journal/create-iota!]}
-       }]]
+       :post       {:handler
+                    (fn [context]
+                      (let [architect-id (-> context :request :json-params :architect_id)
+                            post         (-> context :request :json-params :post)
+                            ]
+                        (journal/query! (journal/post-iota {:architect_id architect-id :post post}))
+                        ))}}]]
 
     { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
      ;;:validate spec/validate ;; enable spec validation for route data
