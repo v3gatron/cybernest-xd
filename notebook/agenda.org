@@ -1,5 +1,6 @@
 #+TITLE: cybernest-xd
 #+AUTHOR: v3ga jerusalem
+#+STARTUP: hidestars
 
 Cybernest is a personal database and playground to learn as well as capture things that I like
 Journaling, Task Management, Fitness, Books, possibly bookmark manager
@@ -10,6 +11,18 @@ What do you want to do here? This won't be public facing so have fun with is/
 
 I should be able to read .org, & .md files as well as make posts that are saved in the database
 * Todays Agenda
+** Reitit POST with json
+
+
+
+
+
+* Backburner Agenda
+** TODO review 'coercion'
+** TODO CSRF?
+
+
+* Completion List
 ** DONE Pedestal, Reitit and Integrant
    CLOSED: [2021-09-08 Wed 21:43]
 *** DONE Pedestal
@@ -28,8 +41,8 @@ I should be able to read .org, & .md files as well as make posts that are saved 
    CLOSED: [2021-09-17 Fri 13:50]
 ** DONE understand more about logback.xml
    CLOSED: [2021-09-08 Wed 21:56]
-** TODO review 'coercion'
-** TODO CSRF?
+
+
 
 * Ideas
   futura font
@@ -43,3 +56,7 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 
 * Useful links
   https://ghufran.posthaven.com/setting-up-a-reagent-clojurescript-project-with-shadow-cljs-and-cursive
+
+  #+BEGIN_SRC clojure
+
+  #+END_SRC

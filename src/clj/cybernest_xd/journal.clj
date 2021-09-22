@@ -13,7 +13,17 @@
             [buddy.hashers :refer [encrypt check]]
             ;; [hashp.core]
             [portal.api :as p]
+
             [reitit.ring :as ring]
+            [reitit.swagger :as swagger]
+            [reitit.swagger-ui :as swagger-ui]
+            [reitit.ring.coercion :as coercion]
+            [reitit.coercion.spec]
+            [reitit.ring.middleware.muuntaja :as muuntaja]
+            [reitit.ring.middleware.exception :as exception]
+            [reitit.ring.middleware.multipart :as multipart]
+            [reitit.ring.middleware.parameters :as parameters]
+            [muuntaja.core :as m]
             [hiccup.core :refer [html]]
             [hiccup.page :refer [html5 include-js include-css]]
             [hiccup.def]
@@ -29,30 +39,21 @@
    [:title title]
    (include-css "/css/style.css")])
 
-(defn header []
-  [:header
-   [:div#logo (str "Cybernest&#8734xD: Per Aspera Ad Astra")]])
+
 
 (defn page [title & content]
   (html5 {:lang "en"}
          (head title)
          [:body
           [:div#app
-           (header)
-           [:div#app content]
            (include-js "/out/main.js")
            [:script "cybernest_xd.core.run()"]]]))
 
-#_(jdbc/execute! db/datasource ["create table if not exists architect(id SERIAL NOT NULL PRIMARY KEY,
-                                                         handle VARCHAR(100) NOT NULL,
-                                                         password VARCHAR(100)  NOT NULL,
-                                                         profile jsonb)"])
 
+#_(p/open)
 
-#_(p/open
-  {:portal.colors/theme :portal.colors/solarized-dark})
 #_(p/close)
-
+#_(p/tap)
 
 
 (defn db-query [sql]
@@ -135,12 +136,6 @@
 
 
 
-(defn post-iota [{:keys [architect_id post]}]
-  (-> (hh/insert-into :iota)
-      (hh/columns :architect_id :post)
-      (hh/values [[architect_id post]])))
-
-
 (defn create-architect!
   "create-architect! - Create an architect/content creator"
   [{:keys [handle password]} ]
@@ -163,21 +158,38 @@
 
 
 
+#_(defn create-contact
+  [{:keys [parameters]}]
+  (let [data (:body parameters)
+        created-id (db/insert-contact db/config data)]
+    {:status 201
+     :body (db/get-contact-by-id db/config created-id)}))
 
-(defn create-iota! [{:keys [params]}]
-  (query! (post-iota params))
+
+;; NOTE: So here I have to decide if I should go interceptors or a regular handler. I don't think interceptors are necessary
+(defn create-iota! [{:keys [architect_id post]}]
+  (-> (hh/insert-into :iota)
+      (hh/columns :architect_id :post)
+      (hh/values [[architect_id post]])))
+
+
+(defn post-iota [{:keys [params]}]
+  (query! (create-iota! params))
+  {:status 201
+   :body "post created"}
   ;; (response/found "/")
   )
 
-(def insert-iota
-  {:name ::insert-iota
-   :enter
-   (fn [context]
-     (let [architect-id (-> context :request :json-params :architect_id)
-           post         (-> context :request :json-params :post)
-           ]
-       (query! (post-iota {:architect_id architect-id :post post}))
-       ))})
+
+#_(def insert-iota
+    {:name ::insert-iota
+     :enter
+     (fn [context]
+       (let [architect-id (-> context :request :json-params :architect_id)
+             post         (-> context :request :json-params :post)
+             ]
+         (query! (post-iota {:architect_id architect-id :post post}))
+         ))})
 
 
 ;; lets start a server here
@@ -193,15 +205,60 @@
 (def app
   (ring/ring-handler
    (ring/router
-    ["/api" {:middleware [[wrap :api]]}
-     ["/ping" {:get handler
-               :name ::ping}]
+    [["/swagger.json"
+      {:get {:no-doc                  true
+             :swagger                 {:info     {:title "cybernest"}
+                                       :basePath "/api"} ;; prefix for all paths
+             :handler                 (swagger/create-swagger-handler)}}]
+     ["/"
+      {:get handler}]
+     "/api"
+     {:middleware [[wrap :api]]}
+     ["/iota"
+      {:swagger    {:tags ["iotas"]}
+       :parameters {:body {:architect_id int?, :post string?}}
+       ;; :get {:interceptors journal/post-iota}
+       :post       {:handler create-iota!
+                    ;; (fn [context]
+                    ;;   (let [architect-id (-> context :request :json-params :architect_id)
+                    ;;         post         (-> context :request :json-params :post)
+                    ;;         ]
+                    ;;     (create-iota! {:architect_id architect-id :post post})
+                    ;;     ))
+                    }}]
+     ;; ["/iota"
+     ;;  {:parameters {:architect_id int? :post string?}
+     ;;   :post       {:handler create-iota!}}]
+     ["/ping"
+      {:get  handler
+       :name ::ping}]
      ["/admin" {:middleware [[wrap :admin]]}
-      ["/users" {:get handler
-                 :post handler}]]])
+      ["/users" {:get  handler
+                 :post handler}]]]
+
+    {:data {:coercion   reitit.coercion.spec/coercion
+            :muuntaja   m/instance
+            :middleware [;; query-params & form-params
+                         parameters/parameters-middleware
+                         ;; content-negotiation
+                         muuntaja/format-negotiate-middleware
+                         ;; encoding response body
+                         muuntaja/format-response-middleware
+                         ;; exception handling
+                         exception/exception-middleware
+                         ;; decoding request body
+                         muuntaja/format-request-middleware
+                         ;; coercing response bodys
+                         coercion/coerce-response-middleware
+                         ;; coercing request parameters
+                         coercion/coerce-request-middleware
+                         ;; multipart
+                         multipart/multipart-middleware]}})
    (ring/routes
+    (swagger-ui/create-swagger-ui-handler {:path "/swagger"})
     (ring/create-resource-handler {:path "/" })
     (ring/create-default-handler))))
+
 
 
 
@@ -221,17 +278,18 @@
   (stop-server)
   (create-server 8888))
 
-
+;; -- Interactive Play
 #_(create-server 8888)
 #_(stop-server)
 #_(restart-server)
 
+(add-tap #'p/submit)
+(tap> (app {:request-method :get :uri "/swagger.json"}))
 
 
 
 
-
-
+;; -- Scratch
 #_(create-iota! [{:architect_id 1 :post "lets see"}] )
 
 ;; NOTE: My first post...
