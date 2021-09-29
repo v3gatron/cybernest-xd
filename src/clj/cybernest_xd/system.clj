@@ -7,16 +7,17 @@
             [cybernest-xd.router :as router]))
 
 (defn cybernest-xd-configuration [env]
-  {:cybernest-xd/server {:env                    env
-                         ::server/type           :jetty
-                         ::server/port           8080
-                         ::server/join?          false
-                         ::server/routes         []
-                         ::server/resource-path  "public"
+  {:cybernest-xd/server {:env                     env
+                         ::server/type            :jetty
+                         ::server/port            8080
+                         ::server/join?           false
+                         ::server/routes          router/routes
+                         ::server/resource-path   "public"
                          ::server/allowed-origins (constantly true)
-                         ::server/secure-headers {:content-security-policy-settings {:default-src "'self'"
-                                                                                     :style-src   "'self' 'unsafe-inline'"
-                                                                                     :script-src  "'self' 'unsafe-inline'"}}
+                         ::server/secure-headers  {:content-security-policy-settings {:object-src "none"}}
+                         ;; ::server/secure-headers  {:content-security-policy-settings {:default-src "'self'"
+                         ;;                                                              :style-src   "'self' 'unsafe-inline'"
+                         ;;                                                              :script-src  "'self' 'unsafe-inline'"}}
                          }})
 
 (defmethod ig/init-key :cybernest-xd/db [_ db-spec]
@@ -34,9 +35,9 @@
 (defmethod ig/init-key :cybernest-xd/server [_ config]
   (let [service-map config]
     {:server (-> service-map
-                 (server/default-interceptors)
-                 (pedestal/replace-last-interceptor router/router)
-                 (server/dev-interceptors)
+                 ;; (server/default-interceptors)
+                 ;; (pedestal/replace-last-interceptor router/routes)
+                 ;; (server/dev-interceptors)
                  (server/create-server)
                  (server/start)
                  )}))
