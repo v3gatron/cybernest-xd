@@ -1,3 +1,4 @@
+
 (ns cybernest-xd.system
   (:require [integrant.core :as ig]
             [io.pedestal.http :as server]
@@ -12,10 +13,11 @@
                          ::server/join?          false
                          ::server/routes         []
                          ::server/resource-path  "public"
+                         ::server/allowed-origins (constantly true)
                          ::server/secure-headers {:content-security-policy-settings {:default-src "'self'"
                                                                                      :style-src   "'self' 'unsafe-inline'"
                                                                                      :script-src  "'self' 'unsafe-inline'"}}
-                                                                                     }})
+                         }})
 
 (defmethod ig/init-key :cybernest-xd/db [_ db-spec]
   (println "Database Initiated...")

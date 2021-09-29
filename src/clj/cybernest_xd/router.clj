@@ -11,18 +11,21 @@
             [reitit.http.interceptors.exception :as exception]
             [reitit.http.interceptors.multipart :as multipart]
             [reitit.pedestal :as pedestal]
-
+            [ring.middleware.reload :refer [wrap-reload]]
             [muuntaja.core :as m]
             [clojure.core.async :as a]
             [clojure.java.io :as io]
-            [cybernest-xd.journal :as journal]
-            ))
+            [cybernest-xd.journal :as xd-play]))
+
+
+
+
 
 (defn interceptor [number]
   {:enter (fn [ctx] (a/go (update-in ctx [:request :number] (fnil + 0) number)))})
 
 (defn hello-interceptor [request]
-  {:status 200 :body "Hello, chrysalis"})
+  {:status 200 :body "Hello, chrysalis 2"})
 
 (def router
   (pedestal/routing-interceptor
@@ -35,22 +38,25 @@
 
      ["/"
       {:swagger {:tags ["basic"]}
-       :get     {:interceptors [hello-interceptor]} }]
 
+       :get xd-play/handler }]
+
+     #_["iota"
+      :post {:interceptor xd-play }]
      ;; TODO: now how to make this work...
      ;; TODO: check what you're doing here... your swagger tags should be seperate and above allroutes under topic
 
-     ["/iota"
-      {:swagger    {:tags ["iotas"]}
-       :parameters {:body {:architect_id int?, :post string?}}
-       ;; :get {:interceptors journal/post-iota}
-       :post       {:handler
-                    (fn [context]
-                      (let [architect-id (-> context :request :json-params :architect_id)
-                            post         (-> context :request :json-params :post)
-                            ]
-                        (journal/query! (journal/post-iota {:architect_id architect-id :post post}))
-                        ))}}]]
+     #_["/iota"
+        {:swagger    {:tags ["iotas"]}
+         :parameters {:body {:architect_id int?, :post string?}}
+         ;; :get {:interceptors journal/post-iota}
+         :post       {:handler
+                      (fn [context]
+                        (let [architect-id (-> context :request :json-params :architect_id)
+                              post         (-> context :request :json-params :post)
+                              ]
+                          (journal/query! (journal/post-iota {:architect_id architect-id :post post}))
+                          ))}}]]
 
     { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
      ;;:validate spec/validate ;; enable spec validation for route data
@@ -83,5 +89,5 @@
      {:path   "/swagger"
       :config {:validatorUrl     nil
                :operationsSorter "alpha"}})
-    (ring/create-resource-handler)
+    (ring/create-resource-handler {:path "/"})
     (ring/create-default-handler))))

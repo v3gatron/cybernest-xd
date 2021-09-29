@@ -12,7 +12,8 @@
 
 
 (defn hello []
-  [:div (str "hello cybernest2")])
+  [:div (str "hello cybernest")])
+(defn ok [])
 
 (defn header []
   [:header

@@ -22,4 +22,4 @@
                         {"clojars" "https://clojars.org/repo"})))
 
 (comment
-  (add-dep '[[hiccup "2.0.0-alpha2"]]))
+  (add-dep '[[clj-http "3.12.3"]]))
