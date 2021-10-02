@@ -39,8 +39,12 @@
 
 (def routes (route/expand-routes #{["/" :get hello-interceptor :route-name :greet]
                                    ["/iota" :post db/post-iota :route-name :create-iota]}))
-(def url-for (route/url-for-routes routes))
 
+
+(def url-for (route/url-for-routes routes))
+(def form-action (route/form-action-for-routes routes))
+
+(form-action :create-iota :params {:architect_id 1 :post "ok"})
 (url-for :create-iota :params {:architect_id 1 :post "hey"})
 #_(def router
     (pedestal/routing-interceptor

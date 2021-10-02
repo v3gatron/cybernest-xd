@@ -5,6 +5,7 @@
             [next.jdbc.result-set :as rs]
             [honey.sql :as honeysql]
             [honey.sql.helpers :as hh]
+            [io.pedestal.http :as http]
             [buddy.hashers :refer [encrypt check]])
   (:import (com.zaxxer.hikari HikariDataSource)))
 
@@ -106,9 +107,11 @@
       (hh/values [[architect_id post]])))
 
 (defn post-iota [{:keys [architect_id post]}]
-  (println architect_id)
-  (query-one! (create-iota {:architect_id architect_id
-                            :post post})))
+  (let [new-iota (:json-params architect_id post)]
+    (-> (query-one! (create-iota {:architect_id (get :architect_id new-iota)
+                                  :post         (get :post new-iota)}))
+        (http/json-response)
+        (assoc :status 201))))          ; NOTE: Damn close
 
 (post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
 #_(query-one! (create-iota {:architect_id 1 :post "lets see again"} ))
