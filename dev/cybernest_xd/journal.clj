@@ -52,7 +52,11 @@
            [:script "cybernest_xd.core.run()"]]]))
 
 
-
+(comment                                ; TODO: Make post work correctly
+  ;; NOTE: INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin nil, :allowed true, :line 84} Execution error (ExceptionInfo) at slingshot.support/stack-trace (support.clj:201).
+  (client/post "http://localhost:8080/iota" {:form-params  {:architect_id 1 :post "hello from clj-http"}
+                                             :content-type :json})
+  )
 
 #_(def insert-iota
     {:name ::insert-iota
@@ -157,12 +161,3 @@
 
 #_(add-tap #'p/submit)
 #_(tap> (app {:request-method :get :uri "/swagger.json"}))
-
-
-
-
-;; -- Scratch
-#_(create-iota! [{:architect_id 1 :post "lets see"}] )
-
-;; NOTE: My first post...
-#_(db-query-one (create-iota! {:architect_id 1 :post "Are you doubling again?"}))

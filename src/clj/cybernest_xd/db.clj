@@ -58,10 +58,11 @@
 
 
   (jdbc/execute! datasource
-                 ["create table if not exists iota(id SERIAL NOT NULL PRIMARY KEY,
+                 ["create table if not exists iota(id UUID DEFAULT gen_random_uuid(),
                                                  architect_id INTEGER,
                                                  post VARCHAR(400),
                                                  created_at TIMESTAMP DEFAULT Now(),
+                                                 PRIMARY KEY (id),
                                                  CONSTRAINT fk_architect
                                                      FOREIGN KEY(architect_id)
                                                         REFERENCES architect(id))"]))
@@ -72,30 +73,47 @@
 
   (let [hashed-password     (encrypt password)
         architect           (->
-                   (hh/insert-into :architect)
-                   (hh/columns :handle :password)
-                   (hh/values [[handle hashed-password]])
-                   (honeysql/format)
-                   db-query-one)
+                             (hh/insert-into :architect)
+                             (hh/columns :handle :password)
+                             (hh/values [[handle hashed-password]])
+                             (honeysql/format)
+                             db-query-one)
         sanitized-architect (dissoc architect :password)]
     sanitized-architect))
 
 
+;; NOTE: Create iota and make sure it doesn't double ...done(what is the difference? query vs query-one?)
+;; TODO: Remove iota then create one via pedestal route
+;; NOTE: Do I want to do reitit or pedestal routes? Less is more...which in this case more may be less because I'll want to use reitit for front end routes?
+;; TODO: Create Iota from cljs/ajax
 
+;; -- 01-10-21 Scratch
 #_(create-architect! {:handle "v3ga"
-                    :password "hocus"
-                     })
+                      :password "hocus"
+                      })                ; NOTE: This works, i think your issue deals with (query!/db-query-one)
+
+
+#_(query-one! (create-iota {:architect_id 1 :post "lets see"} ))
+
 
 
 
 
 ;; NOTE: So here I have to decide if I should go interceptors or a regular handler. I don't think interceptors are necessary
-(defn create-iota! [{:keys [architect_id post]}]
+(defn create-iota [{:keys [architect_id post]} ]
   (-> (hh/insert-into :iota)
       (hh/columns :architect_id :post)
       (hh/values [[architect_id post]])))
 
-(defn post-iota [{:keys [parameters]}]
+(defn post-iota [{:keys [architect_id post]}]
+  (println architect_id)
+  (query-one! (create-iota {:architect_id architect_id
+                            :post post})))
+
+(post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
+#_(query-one! (create-iota {:architect_id 1 :post "lets see again"} ))
+
+#_(defn [{:keys [parameters]}] post-iota
   (println parameters)
   (let [data (:body parameters)]
     (query! (create-iota! data))

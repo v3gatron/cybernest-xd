@@ -11,24 +11,8 @@
             [next.jdbc :as jdbc]
 
             [spyscope.core]
-
-   ;; [reitit.ring :as ring]
-   ;; [reitit.http :as http]
-   ;; [reitit.coercion.spec]
-   ;; [reitit.swagger :as swagger]
-   ;; [reitit.swagger-ui :as swagger-ui]
-   ;; [reitit.http.coercion :as coercion]
-   ;; [reitit.dev.pretty :as pretty]
-   ;; [reitit.http.interceptors.parameters :as parameters]
-   ;; [reitit.http.interceptors.muuntaja :as muuntaja]
-   ;; [reitit.http.interceptors.exception :as exception]
-   ;; [reitit.http.interceptors.multipart :as multipart]
-   ;; [reitit.pedestal :as pedestal]
-   ;; [ring.middleware.reload :refer [wrap-reload]]
-   ;; [muuntaja.core :as m]
-   ;; [clojure.core.async :as a]
-   ;; [clojure.java.io :as io]
-   [cybernest-xd.journal :as xd-play]))
+            [cybernest-xd.journal :as xd-play]
+            [cybernest-xd.db :as db]))
 
 
 
@@ -54,8 +38,10 @@
 
 
 (def routes (route/expand-routes #{["/" :get hello-interceptor :route-name :greet]
-                                   }))
+                                   ["/iota" :post db/post-iota :route-name :create-iota]}))
+(def url-for (route/url-for-routes routes))
 
+(url-for :create-iota :params {:architect_id 1 :post "hey"})
 #_(def router
     (pedestal/routing-interceptor
      (http/router
@@ -120,3 +106,19 @@
                  :operationsSorter "alpha"}})
       (ring/create-resource-handler {:path "/"})
       (ring/create-default-handler))))
+            ;; [reitit.ring :as ring]
+            ;; [reitit.http :as http]
+            ;; [reitit.coercion.spec]
+            ;; [reitit.swagger :as swagger]
+            ;; [reitit.swagger-ui :as swagger-ui]
+            ;; [reitit.http.coercion :as coercion]
+            ;; [reitit.dev.pretty :as pretty]
+            ;; [reitit.http.interceptors.parameters :as parameters]
+            ;; [reitit.http.interceptors.muuntaja :as muuntaja]
+            ;; [reitit.http.interceptors.exception :as exception]
+            ;; [reitit.http.interceptors.multipart :as multipart]
+            ;; [reitit.pedestal :as pedestal]
+            ;; [ring.middleware.reload :refer [wrap-reload]]
+            ;; [muuntaja.core :as m]
+            ;; [clojure.core.async :as a]
+            ;; [clojure.java.io :as io]

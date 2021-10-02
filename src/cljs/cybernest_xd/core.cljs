@@ -3,7 +3,8 @@
             [reagent.dom :as rdom]
             [portal.web :as p]
             [clojure.string :as str]
-            [goog.string :as gstring]))
+            [goog.string :as gstring]
+            [ajax.core :refer [GET POST]]))
 
 
 
@@ -12,7 +13,9 @@
 
 
 (defn hello []
-  [:div (str "hello cybernest")])
+  [:div (str "hello cybernest xd")])
+
+
 (defn ok [])
 
 (defn header []
