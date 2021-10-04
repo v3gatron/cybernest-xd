@@ -106,14 +106,25 @@
       (hh/columns :architect_id :post)
       (hh/values [[architect_id post]])))
 
-(defn post-iota [{:keys [architect_id post]}]
-  (let [new-iota (:json-params architect_id post)]
-    (-> (query-one! (create-iota {:architect_id (get :architect_id new-iota)
-                                  :post         (get :post new-iota)}))
-        (http/json-response)
-        (assoc :status 201))))          ; NOTE: Damn close
+;; (defn post-iota [{:keys [architect_id post]}]
+;;   (let [new-iota (:json-params architect_id post)]
+;;     (-> (query-one! (create-iota {:architect_id (get :architect_id new-iota)
+;;                                   :post         (get :post new-iota)}))
+;;         (http/json-response)
+;;         (assoc :status 201))))
+                                        ; NOTE: Damn close
 
-(post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
+(def insert-iota
+  {:name  ::insert-iota
+   :enter (fn [ctx]
+            (let [id   (-> ctx :request :json-params :architect_id)
+                  post (-> ctx :request :json-params :post)]
+              (println post)
+              (query-one! (create-iota {:architect_id id :post post}))
+              #_(created-response ctx)
+              ))})
+
+#_(post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
 #_(query-one! (create-iota {:architect_id 1 :post "lets see again"} ))
 
 #_(defn [{:keys [parameters]}] post-iota
