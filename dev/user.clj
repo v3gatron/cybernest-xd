@@ -22,4 +22,4 @@
                         {"clojars" "https://clojars.org/repo"})))
 
 (comment
-  (add-dep '[[clj-http "3.12.3"]]))
+  (add-dep '[[keechma/next "0.1.3"]]))

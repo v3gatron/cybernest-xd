@@ -32,6 +32,7 @@
   (:import [org.postgresql.util PGobject]
            [java.sql PreparedStatement]))
 
+;; TODO: At some point you need to switch to http/2 Do it early so you don't get hit with issues
 #_(#spy/p (client/get "http://localhost:8080"))
 ;; -- Web Interface --------------------------------------------
 
@@ -54,7 +55,7 @@
 
 (comment                                ; TODO: Make post work correctly
   ;; NOTE: INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin nil, :allowed true, :line 84} Execution error (ExceptionInfo) at slingshot.support/stack-trace (support.clj:201).
-  (client/post "http://localhost:8080/iota" {:form-params  {:architect_id 1 :post "hello from clj-http"}
+  (client/post "http://localhost:8080/iota" {:form-params  {:architect_id 1 :post "hello from clj-http, once more"}
                                              :content-type :json})
   )
 

@@ -36,8 +36,8 @@
 (def supported-types ["text/html" "application/edn" "application/json" "text/plain"])
 (def content-negotiation-interceptor (conneg/negotiate-content supported-types))
 
-
-(def routes (route/expand-routes #{["/" :get hello-interceptor :route-name :greet]
+;; TODO: How to handle multple data response formats? Showing specifically should return either json or html
+(def routes (route/expand-routes #{["/" :get hello-interceptor :route-name :greent]
                                    ["/iota" :post [(body-params/body-params)
                                                    http/json-body
                                                    db/insert-iota]]}))

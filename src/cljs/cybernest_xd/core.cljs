@@ -4,7 +4,17 @@
             [portal.web :as p]
             [clojure.string :as str]
             [goog.string :as gstring]
-            [ajax.core :refer [GET POST]]))
+            [cybernest-xd.utils :refer [api-host]]
+            [keechma.next.core :as k-core]
+            [keechma.next.controller :as k-ctrl]
+            [helix.core :refer [defnc $ <> provider]]
+            [helix.dom :as d]
+            [helix.hooks :as hooks]
+            ["react-dom" :as dom]
+            ;; [ajax.core :refer [GET POST]]
+            ))
+
+(derive :counter :keechma/controller)
 
 
 
@@ -27,10 +37,16 @@
    (header)
    (hello)])
 
-(defn ^:dev/after-load render
-  "Render the toplevel component for this app."
-  []
-  (rdom/render [content] (.getElementById js/document "app")))
+(defnc app []
+  (d/div "hello cybernest from helix"))
 
-(defn ^:export run []
-  (render))
+;; (defn ^:dev/after-load render
+;;   "Render the toplevel component for this app."
+;;   []
+;;   (rdom/render [content] (.getElementById js/document "app")))
+
+(defn ^:dev/after-load init []
+  (dom/render
+   ($ app) (js/document.getElementById "app")))
+;; (defn ^:export run []
+;;   (render))
