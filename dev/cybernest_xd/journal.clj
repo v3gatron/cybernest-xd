@@ -50,7 +50,8 @@
          [:body
           [:div#app
            (include-js "/out/main.js")
-           [:script "cybernest_xd.core.run()"]]]))
+           ;; [:script "cybernest_xd.core.run()"]
+           ]])) ;; NOTE: Firefox allows this even when run isn't called. chrome doesnt
 
 
 (comment                              ; TODO: Make post work correctly

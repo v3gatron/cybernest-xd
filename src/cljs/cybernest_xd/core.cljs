@@ -12,8 +12,11 @@
             [helix.hooks :as hooks]
             ["react-dom" :as dom]
             [ajax.core :refer [GET]]
+            [devtools.core :as devtools]
             ))
+#_(devtools/install!)
 
+#_(.log js/console (range 100))
 (derive :counter :keechma/controller)
 
 
@@ -23,7 +26,7 @@
 
 
 (defn hello []
-  [:div (str "hello cybernest xd")])
+  [:div (str "ello cybernest xd")])
 
 
 (defn ok [])
@@ -38,7 +41,7 @@
    (hello)])
 
 (defnc app []
-  (d/div "hello cybernest from helix"))
+  (d/div (d/img {:src "images/chrysalisxd-mg.png"})))
 
 ;; (defn ^:dev/after-load render
 ;;   "Render the toplevel component for this app."

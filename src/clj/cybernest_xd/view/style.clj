@@ -14,6 +14,7 @@
 
 
 ;; Information Layer
+(def bg "#000E0F")
 (def bg1 "#0C1314")
 (def bg2 "#090E0F")
 (def bg3 "#0A0F1C")
@@ -38,7 +39,7 @@
 (gwd/defstyles style
 
   (gstyle/at-import (url "https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Roboto:wght@400;700&family=VT323&display=swap"))
-  [:body {:background-color bg1
+  [:body {:background-color bg
           :color            fg1
           :font-family      "Futura"
           :line-height      "1.2"

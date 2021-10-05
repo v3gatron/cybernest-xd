@@ -61,6 +61,7 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 
 
 * Shadow-cljs choose cider-connect then :app, fyi make sure main server is up and running
+** Sesman browser to see what repls are running. clj&cljs jack-in works now
   #+BEGIN_SRC clojure
 (do (require '[shadow.cljs.devtools.api :as shadow]) (shadow/nrepl-select :app))
   #+END_SRC
