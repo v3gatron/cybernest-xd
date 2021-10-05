@@ -18,6 +18,27 @@
 
 (def datasource (jdbc/get-datasource db-spec))
 
+
+(defn ok-response
+  [context body]
+  (assoc context :response {:status 200
+                            :body body}))
+
+(defn created-response
+  [context body]
+  (assoc context :response {:status 201
+                            :body body}))
+
+(defn deleted-response
+  [context body]
+  (assoc context :response {:status 204
+                            :body body}))
+
+(defn rejected-response
+  [context body]
+  (assoc context :response {:status 400
+                            :body body}))
+
 (defn start-connection-pool [db]
   (connection/->pool HikariDataSource db))
 
@@ -119,10 +140,26 @@
    :enter (fn [ctx]
             (let [id   (-> ctx :request :json-params :architect_id)
                   post (-> ctx :request :json-params :post)]
-              (println post)
               (query-one! (create-iota {:architect_id id :post post}))
               #_(created-response ctx)
               ))})
+
+(defn get-all-iotas []
+  (-> (hh/select :*)
+      (hh/from :iota)))
+
+(def find-all-iotas
+  {:name ::find-all-iotas
+   :enter
+   (fn [context]
+     (let [iota-return (sql/find-by-keys datasource :iota :all)]
+       (ok-response context iota-return)))})
+
+(def get-iotas
+  {:name ::get-iotas
+   :enter (fn [ctx]
+            (query! (get-all-iotas)))})
+
 
 #_(post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
 #_(query-one! (create-iota {:architect_id 1 :post "lets see again"} ))

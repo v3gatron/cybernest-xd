@@ -53,10 +53,11 @@
            [:script "cybernest_xd.core.run()"]]]))
 
 
-(comment                                ; TODO: Make post work correctly
+(comment                              ; TODO: Make post work correctly
   ;; NOTE: INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin nil, :allowed true, :line 84} Execution error (ExceptionInfo) at slingshot.support/stack-trace (support.clj:201).
   (client/post "http://localhost:8080/iota" {:form-params  {:architect_id 1 :post "hello from clj-http, once more"}
                                              :content-type :json})
+  (client/get "http://localhost:8080/iotas")
   )
 
 #_(def insert-iota

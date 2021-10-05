@@ -38,6 +38,9 @@
 
 ;; TODO: How to handle multple data response formats? Showing specifically should return either json or html
 (def routes (route/expand-routes #{["/" :get hello-interceptor :route-name :greent]
+                                   ["/iotas" :get [(body-params/body-params)
+                                                   http/json-body
+                                                   db/find-all-iotas]]
                                    ["/iota" :post [(body-params/body-params)
                                                    http/json-body
                                                    db/insert-iota]]}))

@@ -58,8 +58,9 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 * Useful links
   https://ghufran.posthaven.com/setting-up-a-reagent-clojurescript-project-with-shadow-cljs-and-cursive
 
-  #+BEGIN_SRC clojure
 
-  #+END_SRC
 
 * Shadow-cljs choose cider-connect then :app, fyi make sure main server is up and running
+  #+BEGIN_SRC clojure
+(do (require '[shadow.cljs.devtools.api :as shadow]) (shadow/nrepl-select :app))
+  #+END_SRC

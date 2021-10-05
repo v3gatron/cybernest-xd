@@ -11,7 +11,7 @@
             [helix.dom :as d]
             [helix.hooks :as hooks]
             ["react-dom" :as dom]
-            ;; [ajax.core :refer [GET POST]]
+            [ajax.core :refer [GET]]
             ))
 
 (derive :counter :keechma/controller)
@@ -46,7 +46,10 @@
 ;;   (rdom/render [content] (.getElementById js/document "app")))
 
 (defn ^:dev/after-load init []
-  (dom/render
-   ($ app) (js/document.getElementById "app")))
+  (dom/render ($ app) (js/document.getElementById "app")))
 ;; (defn ^:export run []
 ;;   (render))
+
+#_(GET "http://localhost:8080/iotas"
+     {:handler (fn [response]
+                 (.log js/console response))})
