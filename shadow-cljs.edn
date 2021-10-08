@@ -2,10 +2,10 @@
  :nrepl {:port 7002
          :init-ns cybernest-xd.core
          :nrepl-middleware [shadow.cljs.devtools.server.nrepl/middleware]}
- :dependencies [[cljs-ajax "0.8.1"]
-                [reagent/reagent "1.1.0"]
-                [re-frame/re-frame "1.2.0"]
-                [cider/cider-nrepl "0.26.0"]
+ :dependencies [;; [cljs-ajax "0.8.1"]
+                ;; [reagent/reagent "1.1.0"]
+                ;; [re-frame/re-frame "1.2.0"]
+                ;; [cider/cider-nrepl "0.26.0"]
                 ]
 
  :builds {:app {:target     :browser
@@ -13,5 +13,5 @@
                 :output-dir "resources/public/out"
                 :asset-path "/out"
                 :modules    {:main {:entries [cybernest-xd.core]}}
-                :devtools {:preloads [devtools.preload]}
+                ;; :devtools {:preloads [devtools.preload]}
                 :http-root "public"}}}

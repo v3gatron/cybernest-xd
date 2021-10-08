@@ -4,7 +4,7 @@
             [portal.web :as p]
             [clojure.string :as str]
             [goog.string :as gstring]
-            [cybernest-xd.utils :refer [api-host]]
+            [cybernest-xd.util :refer [api-host]]
             [keechma.next.core :as k-core]
             [keechma.next.controller :as k-ctrl]
             [helix.core :refer [defnc $ <> provider]]
@@ -15,6 +15,7 @@
             [devtools.core :as devtools]
             ))
 #_(devtools/install!)
+;; (devtools.core/set-pref! :dont-detect-custom-formatters true)
 
 #_(.log js/console (range 100))
 (derive :counter :keechma/controller)
@@ -25,23 +26,9 @@
 ;; TODO: call /iota/ POST handler
 
 
-(defn hello []
-  [:div (str "ello cybernest xd")])
-
-
-(defn ok [])
-
-(defn header []
-  [:header
-   [:div#logo (str "Cybernest -" (gstring/unescapeEntities "&#8734") "xD: Per Aspera Ad Astra")]])
-
-(defn content []
-  [:div
-   (header)
-   (hello)])
 
 (defnc app []
-  (d/div (d/img {:src "images/chrysalisxd-mg.png"})))
+  (d/div (d/img {:src "images/chrysalisxd-grn.png"})))
 
 ;; (defn ^:dev/after-load render
 ;;   "Render the toplevel component for this app."
@@ -50,8 +37,9 @@
 
 (defn ^:dev/after-load init []
   (dom/render ($ app) (js/document.getElementById "app")))
-;; (defn ^:export run []
-;;   (render))
+;;
+(defn ^:export run []
+   (init))
 
 #_(GET "http://localhost:8080/iotas"
      {:handler (fn [response]

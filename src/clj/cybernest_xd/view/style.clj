@@ -14,12 +14,14 @@
 
 
 ;; Information Layer
-(def bg "#000E0F")
+(def bg "#000f10")
 (def bg1 "#0C1314")
 (def bg2 "#090E0F")
 (def bg3 "#0A0F1C")
 (def fg1 "#eeeeee")
 
+
+(def green "#2e8b57")
 (def green1 "#4D764F")
 (def green2 "#232f24")
 
@@ -34,7 +36,7 @@
 ;; -- Notification Layer
 (def success-notification-bg green-light3)
 (def error-notification-bg "#cf6679")
-(def error-fg bg1)
+(def error-fg bg)
 
 (gwd/defstyles style
 

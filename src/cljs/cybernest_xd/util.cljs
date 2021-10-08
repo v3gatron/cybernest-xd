@@ -1,4 +1,4 @@
-(ns cybernest-xd.utils)
+(ns cybernest-xd.util)
 
 (def api-host
   "http://localhost:8080")
