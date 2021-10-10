@@ -5,20 +5,37 @@
             [clojure.string :as str]
             [goog.string :as gstring]
             [cybernest-xd.util :refer [api-host]]
-            [keechma.next.core :as k-core]
-            [keechma.next.controller :as k-ctrl]
-            [helix.core :refer [defnc $ <> provider]]
-            [helix.dom :as d]
-            [helix.hooks :as hooks]
             ["react-dom" :as dom]
-            [ajax.core :refer [GET]]
+            [ajax.core :refer [GET POST]]
             [devtools.core :as devtools]
             ))
 #_(devtools/install!)
+
+(defn hello-component []
+  [:div "Hello from Cybernest, ok cool"])
+
+(defn app []
+  (hello-component)
+  )
+
+(defn ^:export ^:dev/after-load render
+  "Render the toplevel component for this app."
+  []
+  (rdom/render [app] (.getElementById js/document "app")))
+
+
+
+
+
+
+
+
+
+
 ;; (devtools.core/set-pref! :dont-detect-custom-formatters true)
 
 #_(.log js/console (range 100))
-(derive :counter :keechma/controller)
+;; (derive :counter :keechma/controller)
 
 
 
@@ -27,19 +44,9 @@
 
 
 
-(defnc app []
-  (d/div (d/img {:src "images/chrysalisxd-grn.png"})))
-
-;; (defn ^:dev/after-load render
-;;   "Render the toplevel component for this app."
-;;   []
-;;   (rdom/render [content] (.getElementById js/document "app")))
-
-(defn ^:dev/after-load init []
-  (dom/render ($ app) (js/document.getElementById "app")))
 ;;
-(defn ^:export run []
-   (init))
+;; (defn ^:export run []
+;;    (init))
 
 #_(GET "http://localhost:8080/iotas"
      {:handler (fn [response]

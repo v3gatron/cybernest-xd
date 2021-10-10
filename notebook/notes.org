@@ -1,0 +1,16 @@
+#+TITLE: cybernest-xd  - dev notes
+#+AUTHOR: v3ga jerusalem
+#+STARTUP: hidestars
+
+
+* Things I don't know
+  Clojurescript
+  Helix
+  Keechma
+
+
+
+I like the clojurescript file structure
+ui
+ui/pages
+ui/components
