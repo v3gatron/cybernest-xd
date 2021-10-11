@@ -24,12 +24,15 @@ I should be able to read .org, & .md files as well as make posts that are saved 
 
 
 
+
 * Ideas
   futura font
   animated raining header at some points? javascript project?
+  90% max-width 2400?
 
 * Sections [0/4]
-** DOING [#A] Grand Station (notes/thoughts)
+** DOING Iotas and Thoughts
+** DOING [#A] Grand Station (notes/thoughts/timeline... this will actually be a timeline to pull in all of my stuff together.)
 ** TODO [#B] Book Shelf
 ** TODO [#B] Errol or Neptune - XSS Reader/Bookmarks  (this section WILL be neptune blue...)
 ** TODO [#C] Fuel (fitness goals/progress pics)

@@ -1,24 +1,99 @@
 (ns cybernest-xd.core
   (:require [reagent.core :as r]
             [reagent.dom :as rdom]
+            [re-frame.core :as rf]
+            [day8.re-frame.http-fx]
             [portal.web :as p]
             [clojure.string :as str]
             [goog.string :as gstring]
             [cybernest-xd.util :refer [api-host]]
             ["react-dom" :as dom]
-            [ajax.core :refer [GET POST]]
+            [ajax.core :as ajax]
             [devtools.core :as devtools]
             ))
 #_(devtools/install!)
+#_(rf/reg-event-fx
+ ::iota-post
+ (fn [_ [_ ctx]]
+   {:http-xhrio {:method :post
+                 :uri "http://localhost:8080/iota"
+                 :params data
+                 :timeout 5000
+                 :format (ajax/json-response-format {:keywords? true})
+                 :on-success [:good-http-result]
+                 :on-failure [:bad-http-result]}}))
 
-(defn hello-component []
-  [:div "Hello from Cybernest, ok cool"])
+(defn send-message! [fields]
+  (ajax/POST "/iota"
+             {:params @fields
+              :handler #(.log js/console (str "response: " %))
+              :error-handler #(.error js/console (str "error: " %))})) ; NOTE: That gets me partially there. It's updating the db without giving the fields.
+
+(defn message-form []
+  (let [fields (r/atom {})]
+    (fn []
+      [:div
+       [:div.field
+        [:label.label {:for :id} "ID"]
+        [:input.input
+         {:type :text
+          :iota :iota
+          :on-change #(swap! fields assoc :id (-> % .-target .-value))
+          :value (:id @fields)}]]
+
+       [:div.field
+        [:label.label {:for :post} "Post"]
+        [:input.input
+         {:name :post
+          :iota :iota
+          :value (:post @fields)
+          :on-change #(swap! fields
+                             assoc :post (-> % .-target .-value))}]]
+       [:input.button {:type :submit
+                       :on-click #(send-message! fields)
+                       :value "iota"}]])))
+
+  (defn hello-component []
+    [:div "Hello from Cybernest, ok cool"])
+
+
+(defn comlog-section-panel-label [])
+(defn logo [])
+(defn session-management [])
+
+(defn header []
+  [:div#header ])
+
+(defn content [])
+
+;; -- Showcase Panel
+(defn menu-pane [])
+(defn comlog-pane [])
+
+(defn currently-reading-pane [])
+(defn reading-list-pane [])
+(defn book-journal-posts-pane [])
+
+(defn showcase-panel [])
+
+
+
+;; -- Grand Station Panel
+(defn disclaimer-pane [])
+(defn grandstation-panel [])
+
+;; (defn iota-post []
+;;   [:div#post
+;;    [:form {:method post :action "/iota"}
+;;     []]])
+
 
 (defn app []
   (hello-component)
+  (message-form)
   )
 
-(defn ^:export ^:dev/after-load render
+(defn ^:export ^:dev/after-load mount-root
   "Render the toplevel component for this app."
   []
   (rdom/render [app] (.getElementById js/document "app")))
