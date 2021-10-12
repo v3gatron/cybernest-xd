@@ -25,19 +25,22 @@
 
 (defn send-message! [fields]
   (ajax/POST "/iota"
-             {:params @fields
+             {:format :json
+              :params @fields
               :handler #(.log js/console (str "response: " %))
-              :error-handler #(.error js/console (str "error: " %))})) ; NOTE: That gets me partially there. It's updating the db without giving the fields.
+              :error-handler #(.error js/console (str "error: " %))})) ; NOTE: :format :json is what I wanted. I do see the id isn't passing through
 
 (defn message-form []
   (let [fields (r/atom {})]
     (fn []
       [:div
+       [:p (:id @fields)]
+       [:p (:post @fields)]
        [:div.field
         [:label.label {:for :id} "ID"]
         [:input.input
-         {:type :text
-          :iota :iota
+         {:type :number
+          :name :architect_id
           :on-change #(swap! fields assoc :id (-> % .-target .-value))
           :value (:id @fields)}]]
 
@@ -45,7 +48,6 @@
         [:label.label {:for :post} "Post"]
         [:input.input
          {:name :post
-          :iota :iota
           :value (:post @fields)
           :on-change #(swap! fields
                              assoc :post (-> % .-target .-value))}]]
