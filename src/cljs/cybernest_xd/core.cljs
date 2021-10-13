@@ -10,7 +10,11 @@
             ["react-dom" :as dom]
             [ajax.core :as ajax]
             [devtools.core :as devtools]
+
             ))
+
+
+
 #_(devtools/install!)
 #_(rf/reg-event-fx
  ::iota-post
@@ -25,10 +29,13 @@
 
 (defn send-message! [fields]
   (ajax/POST "/iota"
+             (.log js/console (str @fields))
+
              {:format :json
+
               :params @fields
               :handler #(.log js/console (str "response: " %))
-              :error-handler #(.error js/console (str "error: " %))})) ; NOTE: :format :json is what I wanted. I do see the id isn't passing through
+              :error-handler #(.error js/console (str "error: " %))}))
 
 (defn message-form []
   (let [fields (r/atom {})]
@@ -37,12 +44,12 @@
        [:p (:id @fields)]
        [:p (:post @fields)]
        [:div.field
-        [:label.label {:for :id} "ID"]
+        [:label.label {:for :architect_id} "ID"]
         [:input.input
-         {:type :number
+         {:type :integer
           :name :architect_id
           :on-change #(swap! fields assoc :id (-> % .-target .-value))
-          :value (:id @fields)}]]
+          :value (:architect_id  @fields)}]]
 
        [:div.field
         [:label.label {:for :post} "Post"]
@@ -51,9 +58,10 @@
           :value (:post @fields)
           :on-change #(swap! fields
                              assoc :post (-> % .-target .-value))}]]
+       [:br]
        [:input.button {:type :submit
                        :on-click #(send-message! fields)
-                       :value "iota"}]])))
+                       :value "submit"}]])))
 
   (defn hello-component []
     [:div "Hello from Cybernest, ok cool"])
