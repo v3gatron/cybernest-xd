@@ -6,6 +6,8 @@
             [honey.sql :as honeysql]
             [honey.sql.helpers :as hh]
             [io.pedestal.http :as http]
+            ;; [hashp.core]
+            [spyscope.core]
             [buddy.hashers :refer [encrypt check]])
   (:import (com.zaxxer.hikari HikariDataSource)))
 
@@ -127,21 +129,16 @@
       (hh/columns :architect_id :post)
       (hh/values [[architect_id post]])))
 
-;; (defn post-iota [{:keys [architect_id post]}]
-;;   (let [new-iota (:json-params architect_id post)]
-;;     (-> (query-one! (create-iota {:architect_id (get :architect_id new-iota)
-;;                                   :post         (get :post new-iota)}))
-;;         (http/json-response)
-;;         (assoc :status 201))))
-                                        ; NOTE: Damn close
 
 (def insert-iota
   {:name  ::insert-iota
    :enter (fn [ctx]
-            (let [id   (-> ctx :request :json-params :architect_id)
+            (let [id 1
                   post (-> ctx :request :json-params :post)]
+              ;; (#spy/p post)
               (query-one! (create-iota {:architect_id id :post post}))
-              #_(created-response ctx)
+              (#spy/p ctx)
+              ;; (created-response ctx)
               ))})
 
 (defn get-all-iotas []
@@ -161,15 +158,7 @@
             (query! (get-all-iotas)))})
 
 
-#_(post-iota { :post "ok will this get through?"}) ;NOTE: It's inconsistently passing data? and how are posts getting through with no id. Now I see
-#_(query-one! (create-iota {:architect_id 1 :post "lets see again"} ))
 
-#_(defn [{:keys [parameters]}] post-iota
-  (println parameters)
-  (let [data (:body parameters)]
-    (query! (create-iota! data))
-    {:status 201
-     :body   "ok"}))
 
 
 (defn get-iota-by-id

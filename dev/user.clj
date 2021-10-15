@@ -22,4 +22,4 @@
                         {"clojars" "https://clojars.org/repo"})))
 
 (comment
-  (add-dep '[[re-frame "1.2.0"]]))
+  (add-dep '[[cljs-ajax "0.8.4"]]))

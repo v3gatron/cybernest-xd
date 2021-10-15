@@ -2,7 +2,8 @@
 (ns cybernest-xd.system
   (:require [integrant.core :as ig]
             [io.pedestal.http :as server]
-            [reitit.pedestal :as pedestal]
+            ;; [reitit.pedestal :as pedestal]
+            [io.pedestal.http.route :as route]
             [cybernest-xd.db :as db]
             [cybernest-xd.router :as router]))
 

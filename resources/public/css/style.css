@@ -1,10 +1,16 @@
 @import url(https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Roboto:wght@400;700&family=VT323&display=swap);
 
 body {
-  background-color: #000f10;
+  background-color: #0E0912;
   color: #eeeeee;
   font-family: Futura;
   line-height: 1.2;
+}
+
+.block {
+  background-color: #070709;
+  color: #B84260;
+  font-weight: bold;
 }
 
 a {
