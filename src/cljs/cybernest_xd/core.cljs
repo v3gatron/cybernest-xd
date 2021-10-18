@@ -44,7 +44,6 @@
   )
 
 
-
 (defn sendith [fields]
   (let [{:keys [post]} @fields]
     (ajax/POST "/iota"

@@ -1,10 +1,84 @@
 (ns cybernest-xd.journal)
-(comment
-  {:msg     "error-ring-response triggered",
- :context {:response nil,
-           :cors-headers {"Access-Control-Allow-Origin" "http://localhost:8080"},
-           :io.pedestal.interceptor.chain/stack (#Interceptor{:name :io.pedestal.http.impl.servlet-interceptor/stylobate} #Interceptor{:name :io.pedestal.http.impl.servlet-interceptor/terminator-injector}),
-           :request {:json-params {:post "peep"}, :protocol "HTTP/1.1", :async-supported? true, :remote-addr "127.0.0.1", :servlet-response #object[org.eclipse.jetty.server.Response 0x52e7242c "HTTP/1.1 200 \nDate: Fri, 15 Oct 2021 03:13:38 GMT\r\n\r\n"], :servlet #object[io.pedestal.http.servlet.FnServlet 0x755e4d7e "io.pedestal.http.servlet.FnServlet@755e4d7e"], :headers {"origin" "http://localhost:8080", "sec-fetch-site" "same-origin", "host" "localhost:8080", "user-agent" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:92.0) Gecko/20100101 Firefox/92.0", "content-type" "application/json", "content-length" "15", "referer" "http://localhost:8080/index.html", "connection" "keep-alive", "accept" "application/json", "accept-language" "en-US,en;q=0.5", "sec-fetch-dest" "empty", "accept-encoding" "gzip, deflate", "sec-fetch-mode" "cors"}, :server-port 8080, :servlet-request #object[org.eclipse.jetty.server.Request 0x17e5b8b4 "Request(POST //localhost:8080/iota)@17e5b8b4"], :content-length 15, :content-type "application/json", :path-info "/iota", :character-encoding "UTF-8", :url-for #delay[{:status :pending, :val nil} 0x18a74d59], :uri "/iota", :server-name "localhost", :query-string nil, :path-params [], :body #object[org.eclipse.jetty.server.HttpInputOverHTTP 0x13da2e17 "HttpInputOverHTTP@13da2e17[c=15,q=0,[0]=null,s=STREAM]"], :scheme :http, :request-method :post, :context-path ""},
-           :bindings {#'io.pedestal.http.route/*url-for* #delay[{:status :pending, :val nil} 0x18a74d59]}, :enter-async [#function[io.pedestal.http.impl.servlet-interceptor/start-servlet-async]], :io.pedestal.interceptor.chain/terminators (#function[io.pedestal.http.impl.servlet-interceptor/terminator-inject/fn--17233]), :servlet-response #object[org.eclipse.jetty.server.Response 0x52e7242c "HTTP/1.1 200 \nDate: Fri, 15 Oct 2021 03:13:38 GMT\r\n\r\n"], :route {:path "/iota", :method :post, :path-re #"/\Qiota\E", :path-parts ["iota"], :interceptors [#Interceptor{:name :io.pedestal.http.body-params/body-params} #Interceptor{:name :io.pedestal.http/json-body} #Interceptor{:name :cybernest-xd.db/insert-iota}], :route-name :cybernest-xd.db/insert-iota, :path-params [], :io.pedestal.http.route.prefix-tree/satisfies-constraints? #function[clojure.core/constantly/fn--5689]}, :servlet #object[io.pedestal.http.servlet.FnServlet 0x755e4d7e "io.pedestal.http.servlet.FnServlet@755e4d7e"], :servlet-request #object[org.eclipse.jetty.server.Request 0x17e5b8b4 "Request(POST //localhost:8080/iota)@17e5b8b4"], :url-for #delay[{:status :pending, :val nil} 0x18a74d59], :io.pedestal.interceptor.chain/execution-id 328, :servlet-config #object[org.eclipse.jetty.servlet.ServletHolder$Config 0x5d066425 "org.eclipse.jetty.servlet.ServletHolder$Config@5d066425"], :async? #function[io.pedestal.http.impl.servlet-interceptor/servlet-async?]},
- :line 253}
-)
+
+
+;; NOTE: If I decide to switch back over to reitit
+#_(def router
+    (pedestal/routing-interceptor
+     (http/router
+      [["/swagger.json"
+        {:get {:no-doc  true
+               :swagger {:info {:title       "cybernest-xd: per aspera ad astra"
+                                :description "my paracosmic playground"}}
+               :handler (swagger/create-swagger-handler)}}]
+
+       ["/"
+        {:swagger {:tags ["basic"]}
+
+         :get {:interceptor hello-interceptor} }]
+
+       #_["iota"
+          :post {:interceptor xd-play }]
+       ;; TODO: now how to make this work...
+       ;; TODO: check what you're doing here... your swagger tags should be seperate and above allroutes under topic
+
+       #_["/iota"
+          {:swagger    {:tags ["iotas"]}
+           :parameters {:body {:architect_id int?, :post string?}}
+           ;; :get {:interceptors journal/post-iota}
+           :post       {:handler
+                        (fn [context]
+                          (let [architect-id (-> context :request :json-params :architect_id)
+                                post         (-> context :request :json-params :post)
+                                ]
+                            (journal/query! (journal/post-iota {:architect_id architect-id :post post}))
+                            ))}}]]
+
+      { ;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
+       ;;:validate spec/validate ;; enable spec validation for route data
+       ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+       :exception pretty/exception
+       :data      {:coercion     reitit.coercion.spec/coercion
+                   :muuntaja     m/instance
+                   :interceptors [ ;; swagger feature
+                                  swagger/swagger-feature
+                                  ;; query-params & form-params
+                                  (parameters/parameters-interceptor)
+                                  ;; content-negotiation
+                                  (muuntaja/format-negotiate-interceptor)
+                                  ;; encoding response body
+                                  (muuntaja/format-response-interceptor)
+                                  ;; exception handling
+                                  (exception/exception-interceptor)
+                                  ;; decoding request body
+                                  (muuntaja/format-request-interceptor)
+                                  ;; coercing response bodys
+                                  (coercion/coerce-response-interceptor)
+                                  ;; coercing request parameters
+                                  (coercion/coerce-request-interceptor)
+                                  ;; multipart
+                                  (multipart/multipart-interceptor)]}})
+
+     ;; optional default ring handler (if no routes have matched)
+     (ring/routes
+      (swagger-ui/create-swagger-ui-handler
+       {:path   "/swagger"
+        :config {:validatorUrl     nil
+                 :operationsSorter "alpha"}})
+      (ring/create-resource-handler {:path "/"})
+      (ring/create-default-handler))))
+            ;; [reitit.ring :as ring]
+            ;; [reitit.http :as http]
+            ;; [reitit.coercion.spec]
+            ;; [reitit.swagger :as swagger]
+            ;; [reitit.swagger-ui :as swagger-ui]
+            ;; [reitit.http.coercion :as coercion]
+            ;; [reitit.dev.pretty :as pretty]
+            ;; [reitit.http.interceptors.parameters :as parameters]
+            ;; [reitit.http.interceptors.muuntaja :as muuntaja]
+            ;; [reitit.http.interceptors.exception :as exception]
+            ;; [reitit.http.interceptors.multipart :as multipart]
+            ;; [reitit.pedestal :as pedestal]
+            ;; [ring.middleware.reload :refer [wrap-reload]]
+            ;; [muuntaja.core :as m]
+            ;; [clojure.core.async :as a]
+            ;; [clojure.java.io :as io]

@@ -137,8 +137,8 @@
                   post (-> ctx :request :json-params :post)]
               ;; (#spy/p post)
               (query-one! (create-iota {:architect_id id :post post}))
-              (#spy/p ctx)
-              ;; (created-response ctx)
+              (println "THIS WENT THROUGH! # " post )
+              ;; (#spy/p ctx)
               ))})
 
 (defn get-all-iotas []
