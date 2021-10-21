@@ -1,14 +1,58 @@
 @import url(https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Roboto:wght@400;700&family=VT323&display=swap);
 
 body {
-  background-color: #0E0912;
+  background-color: #000f10;
   color: #eeeeee;
   font-family: Futura;
   line-height: 1.2;
 }
 
+#ui {
+  display: grid;
+  grid-gap: 15px;
+  max-width: 2400px;
+  grid-template-columns: 1r 1fr 1fr;
+  grid-template-areas: 'main-pane content-pane content-pane';
+}
+
+#main-pane {
+  grid-area: main-pane;
+}
+
+#main-pane #comlog-panel {
+  background-color: #0A0F1C;
+  width: 100%;
+}
+
+#main-pane .comlog-menu ul {
+  list-style-type: inside;
+  padding: 0px;
+  background-color: #1a1a1a;
+}
+
+#main-pane .comlog-menu ul li {
+  display: inline;
+  float: left;
+  padding: 5px 10px 5px 10px;
+  background-color: #1a1a1a;
+  border: 3px outset #1c1c1c;
+}
+
+#main-pane .comlog-menu ul li:hover {
+  border: 2px inset #1c1c1c;
+  color: #2e8b57;
+}
+
+#main-pane .comlog-menu ul li a {
+  display: block;
+}
+
+#content-pane {
+  grid-area: content-pane;
+}
+
 .block {
-  background-color: #070709;
+  background-color: #0A0F1C;
   color: #B84260;
   font-weight: bold;
 }

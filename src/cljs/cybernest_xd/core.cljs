@@ -15,33 +15,9 @@
 #_(devtools/install!)
 
 
-
-
-
-(defn send-message2! [fields]
-  (ajax/POST "/iota"
-             (.log js/console (str @fields))
-             {:format        :json
-              :params        @fields
-              :handler       #(.log js/console (str "response: " %))
-              :error-handler #(.error js/console (str "error: " %))}))
-
-(defn send-message! [fields]
-;  (.log js/console @fields)
-  (-> (js/fetch "/iota"
-                #js{:method  "POST"
-                    :headers #js {"content-type" "application/json"}
-                    :body    (js/JSON.stringify @fields) })
-                (.then (fn [res] (.json res)))
-                (.then #(.log js/console (str "response: " %)))
-                (.catch #(.error js/console (str "error: " %)))))
-
-
-
-
 (defn iota-success [response]
-  (js/console.log response)
-  )
+  ;; NOTE: Hmmm a success response probably with
+  (js/console.log response))
 
 
 (defn sendith [fields]
@@ -53,11 +29,7 @@
                 :format          (ajax/json-request-format)
                 :response-format (ajax/json-response-format {:keywords? true})
                 :error-handler   iota-success
-                })
-    )
-  )
-                                        ; NOTE: it sent this as raw data ["^ ","~:post","ok now"]
-;; NOTE: I can;t believe it fucking worked and I don't know which one....
+                })))
 
 
 (defn message-form []
@@ -74,41 +46,55 @@
           :value     (:post @fields)
           :on-change #(swap! fields
                              assoc :post (-> % .-target .-value))}]
-         [:br]
+        [:br]
         [:input.button {:type     :submit
                         :on-click #(sendith fields)
                         :value    "Submit"}]]])))
 
 
 
-(defn hello-component []
-  [:div "Hello from Cybernest, ok cool"])
-
 
 (defn comlog-section-panel-label [])
 (defn logo [])
 (defn session-management [])
 
-(defn header []
-  [:div#header ])
+;; -- Main Pane
+;; This pane will hold all of the components on the left side of the interface, comlog, and things pertaining to books, etc
+(defn menu-panel []
+  [:div.comlog-menu
+   [:ul
+    [:li [:div "Articles"]]
+    [:li [:div "Books"]]
+    [:li [:div "Chambers"]]
+    [:li [:div "Cubes"]]
+    [:li [:div "Robots"]]]])
 
-(defn content [])
+(defn comlog-panel []
+  [:div#comlog-panel
+   (menu-panel)])
 
 ;; -- Showcase Panel
-(defn menu-pane [])
-(defn comlog-pane [])
-
 (defn currently-reading-pane [])
 (defn reading-list-pane [])
 (defn book-journal-posts-pane [])
 
 (defn showcase-panel [])
 
+(defn main-pane []
+  [:div#main-pane
+   (comlog-panel)])
 
 
-;; -- Grand Station Panel
+;; -- content-pane
+;; This pane will hold the header/logo/breadcrumbs and the main timeline.  Also content, so individual articles/ chamber etc?
+(defn header []
+  [:div#header ])
+
 (defn disclaimer-pane [])
-(defn grandstation-panel [])
+(defn content-pane []
+  [:div#content-pane "ha"])
+
+
 
 ;; (defn iota-post []
 ;;   [:div#post
@@ -117,8 +103,9 @@
 
 
 (defn app []
-  (hello-component)
-  (message-form))
+  [:div#ui
+   (main-pane)
+   (content-pane)])
 
 (defn ^:export ^:dev/after-load mount-root
   "Render the toplevel component for this app."

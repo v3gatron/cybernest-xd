@@ -78,18 +78,56 @@
   (jdbc/execute! datasource ["CREATE TABLE IF NOT EXISTS architect(id UUID DEFAULT gen_random_uuid(),
                                                          handle VARCHAR(100) NOT NULL,
                                                          password VARCHAR(100) NOT NULL,
+                                                         created_at TIMESTAMP DEFAULT Now(),
                                                          PRIMARY KEY (id))"])
 
 
   (jdbc/execute! datasource
-                 ["create table if not exists iota(id UUID DEFAULT gen_random_uuid(),
+                 ["create table if not exists iota(id UUID DEFAULT NOT NULL gen_random_uuid(),
                                                  architect_id INTEGER,
                                                  post VARCHAR(400),
                                                  created_at TIMESTAMP DEFAULT Now(),
                                                  PRIMARY KEY (id),
                                                  CONSTRAINT fk_architect
                                                      FOREIGN KEY(architect_id)
-                                                        REFERENCES architect(id))"]))
+                                                        REFERENCES architect(id))"])
+
+
+  (db/execute! data-source
+               ["create table if not exists book(id UUID DEFAULT NOT NULL gen_random_uuid(),
+                                                 PRIMARY KEY (id),
+                                                 title VARCHAR(1000)  NOT NULL,
+                                                 author VARCHAR(100),
+                                                 genre VARCHAR(50),
+                                                 own BOOLEAN,
+                                                 reading VARCHAR(10),
+                                                 description TEXT,
+                                                 pages INTEGER
+                                                 created_at TIMESTAMP DEFAULT Now(),)"])
+
+
+  (db/execute! data-source
+               ["create table if not exists chamber(id UUID NOT NULL gen_random_uuid(),
+                                                  PRIMARY KEY (id),
+                                                  architect_id INTEGER,
+                                                  name VARCHAR(100) NOT NULL,
+                                                  created_at TIMESTAMP DEFAULT Now(),
+                                                  CONSTRAINT fk_architect
+                                                     FOREIGN KEY(architect_id)
+                                                        REFERENCES architect(id))"])
+
+  (db/execute! data-source
+               ["create table if not exists cube(id SERIAL NOT NULL PRIMARY KEY,
+                                                  architect_id INTEGER,
+                                                  chamber_id INTEGER,
+                                                  name VARCHAR(100) NOT NULL,
+                                                  created_at TIMESTAMP DEFAULT Now(),
+                                                  CONSTRAINT fk_architect
+                                                     FOREIGN KEY(architect_id)
+                                                        REFERENCES architect(id),
+                                                  CONSTRAINT fk_chamber
+                                                       FOREIGN KEY(chamber_id)
+                                                          REFERENCES chamber(id))"]))
 
 (defn create-architect!
   "create-architect! - Create an architect/content creator"
@@ -133,13 +171,9 @@
 (def insert-iota
   {:name  ::insert-iota
    :enter (fn [ctx]
-            (let [id 1
+            (let [id 1                  ; NOTE: Once you create sessions you can grab the architects ID and assign it here
                   post (-> ctx :request :json-params :post)]
-              ;; (#spy/p post)
-              (query-one! (create-iota {:architect_id id :post post}))
-              (println "THIS WENT THROUGH! # " post )
-              ;; (#spy/p ctx)
-              ))})
+              (query-one! (create-iota {:architect_id id :post post}))))})
 
 (defn get-all-iotas []
   (-> (hh/select :*)

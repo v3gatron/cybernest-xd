@@ -3,15 +3,16 @@
 #+STARTUP: hidestars
 
 
-* Things I don't know
-  Clojurescript
-  Reagent
 
 
 
-I like the clojurescript file structure
-ui
-ui/pages
-ui/components
+file structure
+clj
+
+
+cljs
+- ui
+- ui/pages
+- ui/components
 
 Articles/Chambers may have static pages. I still have to work that out.
