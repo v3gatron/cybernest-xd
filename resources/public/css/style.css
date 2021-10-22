@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Roboto:wght@400;700&family=VT323&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Karla:ital,wght@1,700&family=Oxygen:wght@300&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap);
 
 body {
   background-color: #000f10;
@@ -22,7 +22,8 @@ body {
 #comlog-panel {
   background-color: #000B0C;
   clear: both;
-  max-width: 700px;
+  width: 100%;
+  padding: 8px;;
 }
 
 #comlog-io-panel {
@@ -63,4 +64,12 @@ body {
 
 #content-pane {
   grid-area: content-pane;
+}
+
+#header #logo h2 {
+  padding-top: 0px;
+  margin-top: 0px;
+  color: #3279FB;
+  font-family: Karla;
+  font-style: italic;
 }

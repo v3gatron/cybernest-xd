@@ -14,6 +14,11 @@
 
 
 
+(def chrysalis-theme {:bg "#000f10"
+                      :bg-2 "#000B0C"
+                      :electric-blue "#442de2"
+                      :error-notification-bg "#cf6679"})
+
 ;; Information Layer
 (def bg "#000f10")
 (def chrysalis-bg1 "#0b0b12")
@@ -63,10 +68,10 @@
 
 (gwd/defstyles style
 
-  (gstyle/at-import (url "https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Roboto:wght@400;700&family=VT323&display=swap"))
+  (gstyle/at-import (url "https://fonts.googleapis.com/css2?family=Karla:ital,wght@1,700&family=Oxygen:wght@300&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap"))
   [:body {:background-color bg
           :color            fg1
-          :font-family      "Futura"
+          :font-family      "Futura"    ;NOTE: Add roboto and see if there are some other replacements
           :line-height      "1.2"}]
 
 
@@ -81,8 +86,11 @@
 
 
   [:#comlog-panel {:background-color "#000B0C"
-                   :clear "both"
-                   :max-width        "700px"}]
+                   :clear            "both"
+                   :width            "100%"
+                   :padding "8px;"
+                   ;; :max-width        "700px"
+                   }]
 
   [:#comlog-io-panel {:clear "both"}]
 
@@ -109,4 +117,12 @@
      [:a {:display "block"}]]]]
 
 
-  [:#content-pane {:grid-area "content-pane"}])
+  [:#content-pane {:grid-area "content-pane"}]
+
+  [:#header
+   [:#logo
+    [:h2 {:padding-top "0px"
+          :margin-top "0px"
+          :color "#3279FB"
+          :font-family "Karla"
+          :font-style "italic"}]]])

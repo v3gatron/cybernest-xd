@@ -94,7 +94,9 @@
 ;; -- content-pane
 ;; This pane will hold the header/logo/breadcrumbs and the main timeline.  Also content, so individual articles/ chamber etc?
 (defn header []
-  [:div#header "Chrysalis-xd"])
+  [:div#header
+   [:div#logo
+    [:h2 "chrysalisXD"] ]])
 
 (defn disclaimer-pane [])
 
