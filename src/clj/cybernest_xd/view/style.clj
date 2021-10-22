@@ -69,43 +69,44 @@
           :font-family      "Futura"
           :line-height      "1.2"}]
 
+
   [:#ui {:display               "grid"
          :grid-gap              "15px"
          :max-width             "2400px"
          :grid-template-columns "1r 1fr 1fr"
          :grid-template-areas   [["'main-pane content-pane content-pane'"]]}]
 
-  [:#main-pane {:grid-area "main-pane"}
 
-   [:#comlog-panel {:background-color bg3
-                    :width            "100%"}]
-   [:.comlog-menu
-    [:ul {:list-style-type  "inside"
-          :padding          "0px"
-          :background-color "#1a1a1a"}
-     [:li {:display          "inline"
-           :float            "left"
-           :padding          "5px 10px 5px 10px"
-           :background-color "#1a1a1a"
-           :border           "3px outset #1c1c1c"
-
-           ;; :box-shadow "outset 0px 0px 5px #000"
-           }
-      [:&:hover {:border "2px inset #1c1c1c"
-                 :color  "#2e8b57"}]
+  [:#main-pane {:grid-area "main-pane"}]
 
 
-      [:a {:display "block"}]]]]]
+  [:#comlog-panel {:background-color "#000B0C"
+                   :clear "both"
+                   :max-width        "700px"}]
 
-  [:#content-pane {:grid-area "content-pane"}]
+  [:#comlog-io-panel {:clear "both"}]
 
 
-  [:.block {:background-color chrysalis-bg4
-            :color            cyber-orange4
-            :font-weight      "bold"}]
+  [:.comlog-menu
+   [:ul {:list-style-type  "inside"
+         :padding          "0px"
+         :background-color "#1a1a1a"}
 
-  [:a {:text-decoration "none"
-       :color           green-light1
-       :font-weight     "bold"}]
+    [:li {:display          "inline"
+          :float            "left"
+          :padding          "5px 10px 5px 10px"
+          :background-color "#1a1a1a"
+          :border           "3px outset #1c1c1c"}
 
-  )
+     [:&:hover {:border "2px inset #1c1c1c"
+                :color  "#2e8b57"}]
+
+     [:&:last-child {:background-color "#442de2"}]
+
+     [:&:last-child:hover {:background-color "#1a1a1a"
+                           :color            "#442de2"}]
+
+     [:a {:display "block"}]]]]
+
+
+  [:#content-pane {:grid-area "content-pane"}])

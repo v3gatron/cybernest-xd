@@ -19,18 +19,23 @@ body {
   grid-area: main-pane;
 }
 
-#main-pane #comlog-panel {
-  background-color: #0A0F1C;
-  width: 100%;
+#comlog-panel {
+  background-color: #000B0C;
+  clear: both;
+  max-width: 700px;
 }
 
-#main-pane .comlog-menu ul {
+#comlog-io-panel {
+  clear: both;
+}
+
+.comlog-menu ul {
   list-style-type: inside;
   padding: 0px;
   background-color: #1a1a1a;
 }
 
-#main-pane .comlog-menu ul li {
+.comlog-menu ul li {
   display: inline;
   float: left;
   padding: 5px 10px 5px 10px;
@@ -38,27 +43,24 @@ body {
   border: 3px outset #1c1c1c;
 }
 
-#main-pane .comlog-menu ul li:hover {
+.comlog-menu ul li:hover {
   border: 2px inset #1c1c1c;
   color: #2e8b57;
 }
 
-#main-pane .comlog-menu ul li a {
+.comlog-menu ul li:last-child {
+  background-color: #442de2;
+}
+
+.comlog-menu ul li:last-child:hover {
+  background-color: #1a1a1a;
+  color: #442de2;
+}
+
+.comlog-menu ul li a {
   display: block;
 }
 
 #content-pane {
   grid-area: content-pane;
-}
-
-.block {
-  background-color: #0A0F1C;
-  color: #B84260;
-  font-weight: bold;
-}
-
-a {
-  text-decoration: none;
-  color: #6AAE95;
-  font-weight: bold;
 }

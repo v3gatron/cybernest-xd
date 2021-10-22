@@ -2,6 +2,7 @@
   (:require [reagent.core :as r]
             [reagent.dom :as rdom]
             [re-frame.core :as rf]
+            [goog.dom :as gdom]
             [day8.re-frame.http-fx]
             [portal.web :as p]
             [clojure.string :as str]
@@ -55,7 +56,7 @@
 
 
 (defn comlog-section-panel-label [])
-(defn logo [])
+
 (defn session-management [])
 
 ;; -- Main Pane
@@ -69,9 +70,14 @@
     [:li [:div "Cubes"]]
     [:li [:div "Robots"]]]])
 
+(defn comlog-io-panel []
+  [:div#comlog-io-panel "Comlog I/O"])
+
 (defn comlog-panel []
   [:div#comlog-panel
-   (menu-panel)])
+   [:div (menu-panel)]
+   [:div (comlog-io-panel)] ])
+
 
 ;; -- Showcase Panel
 (defn currently-reading-pane [])
@@ -88,18 +94,18 @@
 ;; -- content-pane
 ;; This pane will hold the header/logo/breadcrumbs and the main timeline.  Also content, so individual articles/ chamber etc?
 (defn header []
-  [:div#header ])
+  [:div#header "Chrysalis-xd"])
 
 (defn disclaimer-pane [])
+
 (defn content-pane []
-  [:div#content-pane "ha"])
+  [:div#content-pane
+   (header)])
 
 
 
-;; (defn iota-post []
-;;   [:div#post
-;;    [:form {:method post :action "/iota"}
-;;     []]])
+(defn get-app-element []
+  (gdom/getElement "app"))
 
 
 (defn app []
@@ -107,10 +113,25 @@
    (main-pane)
    (content-pane)])
 
-(defn ^:export ^:dev/after-load mount-root
-  "Render the toplevel component for this app."
-  []
-  (rdom/render [app] (.getElementById js/document "app")))
+(defn mount [el]
+  (rdom/render [app] el))
+
+(defn mount-app-element []
+  (when-let [el (.getElementById js/document "app")]
+    (mount el)))
+
+(mount-app-element)
+
+(defn ^:after-load on-reload []
+  (mount-app-element))
+
+
+;; (defn ^:export ^:dev/after-load mount-root
+;;   "Render the toplevel component for this app."
+;;   []
+;;   (when-let [el (rdom/render [app] (.getElementById js/document "app"))]
+;;     (mount el)))
+
 
 
 
