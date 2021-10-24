@@ -21,11 +21,7 @@
 
 ;; Information Layer
 (def bg "#000f10")
-(def chrysalis-bg1 "#0b0b12")
 
-(def bg1 "#0C1314")
-(def bg2 "#090E0F")
-(def bg3 "#0A0F1C")
 (def fg1 "#eeeeee")
 
 
@@ -46,13 +42,7 @@
 (def error-notification-bg "#cf6679")
 (def error-fg bg)
 
-;; (def cyber-bg2 "#0A0613")
-;; (def cyber-bg "#0D0C11")
-;; (def bgc "#0E0E12")
 
-;; (def cyberscheme
-;;   {:bg "#2B233E"
-;;    :twilight-bg "#514371"})
 
 (def cyber-bg1 "#0E0912")                     ; darkest
 (def cyber-bg1 "#17171E")
@@ -68,31 +58,39 @@
 
 (gwd/defstyles style
 
-  (gstyle/at-import (url "https://fonts.googleapis.com/css2?family=Karla:ital,wght@1,700&family=Oxygen:wght@300&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap"))
+  (gstyle/at-import (url "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap"))
   [:body {:background-color bg
           :color            fg1
-          :font-family      "Futura"    ;NOTE: Add roboto and see if there are some other replacements
+          :font-family      "Futura" ;NOTE: Add roboto and see if there are some other replacements
           :line-height      "1.2"}]
 
 
+  [:h1, :h2, :h3, :h4, :h5 {:font-family "'M PLUS Rounded 1c', sans-serif"
+                            :border-bottom "solid 2px #442de2"
+                            :display "inline-block"
+                            :padding-bottom "4px"}]
+
   [:#ui {:display               "grid"
          :grid-gap              "15px"
+         :width                 "1920px"
          :max-width             "2400px"
          :grid-template-columns "1r 1fr 1fr"
          :grid-template-areas   [["'main-pane content-pane content-pane'"]]}]
 
 
-  [:#main-pane {:grid-area "main-pane"}]
+  [:#main-pane {:grid-area "main-pane"
+                :max-width "800px"}]
 
 
   [:#comlog-panel {:background-color "#000B0C"
                    :clear            "both"
-                   :width            "100%"
-                   :padding "8px;"
+                   :width            "90%"
+                   :padding          "8px;"
                    ;; :max-width        "700px"
                    }]
 
-  [:#comlog-io-panel {:clear "both"}]
+  [:#comlog-io-panel {:width "100%"
+                      :clear "both"}]
 
 
   [:.comlog-menu
@@ -121,8 +119,23 @@
 
   [:#header
    [:#logo
-    [:h2 {:padding-top "0px"
-          :margin-top "0px"
-          :color "#3279FB"
-          :font-family "Karla"
-          :font-style "italic"}]]])
+    [:h3 {:padding-top "0px"
+          :margin-top  "0px"
+          :color       "#442de2"
+          :border "none"
+          :padding "0px"
+          :font-family "'M PLUS Rounded 1c', sans-serif"
+          :font-style  "italic"}]]])
+
+
+(def app-db (atom {:books [{:id 1 :title "Reamde" :author "Neal Stephenson"}
+                           {:id 2 :title "Dune" :author "Frank Herbert"}
+                           {:id 3 :title "Colorless Tsukuru Tazaki and His Years of Pilgrimage" :author "Haruki Murakami"}
+                           {:id 4 :title "1Q84" :author "Haruki Murakami"}
+                           {:id 5 :title "Rust for Rustaceans"}]
+
+                   :iotas [{:id 1 :post "First post, I should say something interesting here"}
+                           {:id 2 :post "So I decided to make chrysalis as a thought dump and a remedy to saying too much on facbook. Call it a control thing, curiosity...the want to create. Privacy while wanting to be open? Who knows"}]}))
+
+
+(get-in @app-db [:books 3 :title ])

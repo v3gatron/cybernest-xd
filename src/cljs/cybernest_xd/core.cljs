@@ -15,6 +15,20 @@
 
 #_(devtools/install!)
 
+;; (defonce app-state (atom {:books
+;;                           [{:id 1 :title "Reamde" :author "Neal Stephenson"}
+;;                            {:id 2 :title "Dune" :author "Frank Herbert"}
+;;                            {:id 3 :title "Colorless Tsukuru Tazaki and His Years of Pilgrimage" :author "Haruki Murakami"}
+;;                            {:id 4 :title "1Q84" :author "Haruki Murakami"}
+;;                            {:id 5 :title "Rust for Rustaceans"}] }
+;;                          {:iotas
+;;                           [{:id 1 :post "First post, I should say something interesting here"}
+;;                            {:id 2 :post "So I decided to make chrysalis as a thought dump and a remedy to saying too much on facbook. Call it a control thing, curiosity...the want to create. Privacy while wanting to be open? Who knows"}]}))
+
+
+;; (@app-state)
+;; (def x (get-in @app-state [2 :books]))
+
 
 (defn iota-success [response]
   ;; NOTE: Hmmm a success response probably with
@@ -38,19 +52,25 @@
         fields        (r/atom initial-state)]
     (fn []
       [:div.block
-       [:p (:post @fields)]
+       ;; [:p (:post @fields)]
        [:div.field
-        [:label.label {:for :post} "Post"]
-        [:input.input
+        [:div {:style {:border-bottom "1px solid #442de2"}}
+         [:textarea
          {:type      :text
+          :style {:width "100%"
+                  :border "none"
+                  :color "#fff"
+                  :background-color "#000f10"} ; NOTE this shouldn't push the width of the entire grid out.
+          :placeholder "What's on your mind..."
           :name      :post
           :value     (:post @fields)
           :on-change #(swap! fields
-                             assoc :post (-> % .-target .-value))}]
+                             assoc :post (-> % .-target .-value))}]]
+
         [:br]
         [:input.button {:type     :submit
                         :on-click #(sendith fields)
-                        :value    "Submit"}]]])))
+                        :value    "Post"}]]])))
 
 
 
@@ -61,6 +81,10 @@
 
 ;; -- Main Pane
 ;; This pane will hold all of the components on the left side of the interface, comlog, and things pertaining to books, etc
+(defn header []
+  [:div#header
+   [:div#logo [:h3 "chrysalisXD"] ]])   ; NOTE: aura spectrum letters for logo and make a X out of like bands/rings
+
 (defn menu-panel []
   [:div.comlog-menu
    [:ul
@@ -71,38 +95,48 @@
     [:li [:div "Robots"]]]])
 
 (defn comlog-io-panel []
-  [:div#comlog-io-panel "Comlog I/O"])
+  [:div
+   [:div#comlog-io-panel "Comlog breadreadcrumbs placeholder"
+    [message-form]]
+   ]
+  )
 
 (defn comlog-panel []
   [:div#comlog-panel
+   [:div (header)]
    [:div (menu-panel)]
-   [:div (comlog-io-panel)] ])
+   [:div (comlog-io-panel) ; NOTE: you only want this to show up if signed in. Otherwise you get navigation and search
+    ] ])
 
 
 ;; -- Showcase Panel
-(defn currently-reading-pane [])
-(defn reading-list-pane [])
+(defn currently-reading-pane []
+  [:div.currently-reading
+   [:h4 "currently reading"]])
+
+(defn reading-list-panel []
+  [:div [:h4 "reading list"]])
+
 (defn book-journal-posts-pane [])
 
 (defn showcase-panel [])
 
 (defn main-pane []
   [:div#main-pane
-   (comlog-panel)])
+   [comlog-panel]
+   [currently-reading-pane]
+   [reading-list-panel]])
 
 
 ;; -- content-pane
 ;; This pane will hold the header/logo/breadcrumbs and the main timeline.  Also content, so individual articles/ chamber etc?
-(defn header []
-  [:div#header
-   [:div#logo
-    [:h2 "chrysalisXD"] ]])
+
 
 (defn disclaimer-pane [])
 
 (defn content-pane []
   [:div#content-pane
-   (header)])
+   "timeline"])
 
 
 
